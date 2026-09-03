@@ -35,4 +35,18 @@ describe('App', () => {
       screen.getByRole('heading', { level: 2, name: /proyectos destacados/i }),
     ).toBeInTheDocument()
   })
+
+  it('incluye la sección de QA (#qa) en el árbol principal', () => {
+    const { container } = render(<App />)
+
+    const qaSection = container.querySelector('#qa')
+    expect(qaSection).toBeInTheDocument()
+    expect(qaSection?.tagName).toBe('SECTION')
+    expect(
+      screen.getByRole('heading', {
+        level: 2,
+        name: /gobernanza de calidad & qa automation/i,
+      }),
+    ).toBeInTheDocument()
+  })
 })

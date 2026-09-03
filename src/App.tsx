@@ -3,6 +3,7 @@ import Hero from './components/sections/Hero'
 import Experience from './components/sections/Experience'
 import Skills from './components/sections/Skills'
 import Projects from './components/sections/Projects'
+import QAShowcase from './components/sections/QAShowcase'
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Experience />
         <Skills />
         <Projects />
+        <QAShowcase />
       </main>
     </div>
   )
