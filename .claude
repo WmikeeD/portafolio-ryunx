@@ -1,0 +1,13 @@
+# Directrices de Desarrollo - Portafolio de Mayckol Rodríguez
+
+## Rol y Stack Técnico
+- Aplicación: SPA moderna con Vite + React + TypeScript + Tailwind CSS.
+- Testing: Vitest + React Testing Library + Playwright.
+- Icons & Animación: Lucide React, Framer Motion.
+
+## Reglas de Arquitectura y Código
+- Strict TypeScript: Prohibido el uso de `any`. Toda entidad debe tener interfaz en `src/types/`.
+- Clean Architecture / Screaming Architecture: Separar `components/layout`, `components/sections`, `components/interactive`, `data`, `hooks`.
+- Zero-Trust Security: Sanitización estricta de inputs (Zod/DOMPurify) en formularios. No exponer API keys ni secretos en código del cliente.
+- Convención de Commits: Seguir Conventional Commits (`feat:`, `fix:`, `test:`, `refactor:`, `chore:`).
+- QA Gates: Ningún componente interactivo se integra sin su correspondiente prueba unitaria en Vitest.
