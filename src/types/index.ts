@@ -138,3 +138,17 @@ export interface TestRunSummary {
   coverage: string
   executionTime: string
 }
+
+/** Datos de contacto directo mostrados en la columna informativa de la sección. */
+export interface ContactDetails {
+  email: string
+  /** Teléfono en formato legible para mostrar. */
+  phone: string
+  /** Teléfono en formato E.164 para el enlace `tel:`. */
+  phoneHref: string
+  location: string
+  linkedinUrl: string
+  githubUrl: string
+  /** Frase de disponibilidad profesional. */
+  availability: string
+}

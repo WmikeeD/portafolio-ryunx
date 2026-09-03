@@ -1,4 +1,5 @@
 import type {
+  ContactDetails,
   Experience,
   HeroData,
   NavLink,
@@ -35,8 +36,7 @@ export const heroData: HeroData = {
     { label: 'GitHub', href: 'https://github.com/WmikeeD', icon: 'github' },
     {
       label: 'LinkedIn',
-      // TODO(mayckol): confirmar el slug real del perfil de LinkedIn.
-      href: 'https://www.linkedin.com/in/mayckol-rodriguez-sanchez',
+      href: 'https://www.linkedin.com/in/mayckol-sanchez-a32624122',
       icon: 'linkedin',
     },
     { label: 'Correo', href: 'mailto:mayckol10r.s@gmail.com', icon: 'mail' },
@@ -309,4 +309,15 @@ export const qaRunSummary: TestRunSummary = {
   passed: qaTestCases.length,
   coverage: '94.8%',
   executionTime: '1.84s',
+}
+
+/** Canales de contacto directo de Mayckol Rodríguez. */
+export const contactInfo: ContactDetails = {
+  email: 'mayckol10r.s@gmail.com',
+  phone: '+56 9 50571303',
+  phoneHref: '+56950571303',
+  location: 'Santiago, Chile',
+  linkedinUrl: 'https://www.linkedin.com/in/mayckol-sanchez-a32624122',
+  githubUrl: 'https://github.com/WmikeeD',
+  availability: 'Disponible para roles Full-Stack y QA Lead.',
 }
