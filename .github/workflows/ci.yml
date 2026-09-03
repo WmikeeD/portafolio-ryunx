@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Least privilege: the pipeline only needs to read the repository.
+permissions:
+  contents: read
+
+# Supersede outdated PR runs; let pushes to main finish.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  quality-and-security-gates:
+    name: Quality & Security Gates
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies (deterministic)
+        run: npm ci
+
+      - name: 'Gate 1 - Security: dependency audit (prod deps)'
+        run: npm audit --omit=dev
+
+      - name: 'Gate 2 - Architecture & Types: static type-check'
+        run: npm run type-check
+
+      - name: 'Gate 3 - QA & Testing: unit tests (headless)'
+        run: npm run test:run
