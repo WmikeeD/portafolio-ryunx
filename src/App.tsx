@@ -1,5 +1,7 @@
 import Navbar from './components/layout/Navbar'
 import Hero from './components/sections/Hero'
+import Experience from './components/sections/Experience'
+import Skills from './components/sections/Skills'
 
 function App() {
   return (
@@ -7,6 +9,8 @@ function App() {
       <Navbar />
       <main>
         <Hero />
+        <Experience />
+        <Skills />
       </main>
     </div>
   )

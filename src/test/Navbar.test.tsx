@@ -2,7 +2,13 @@ import { fireEvent, render, screen, within } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 import Navbar from '../components/layout/Navbar'
 
-const NAV_LABELS = ['Experiencia', 'Proyectos', 'QA', 'Contacto'] as const
+const NAV_LABELS = [
+  'Experiencia',
+  'Habilidades',
+  'Proyectos',
+  'QA',
+  'Contacto',
+] as const
 const THEME_STORAGE_KEY = 'theme'
 
 describe('Navbar', () => {
@@ -18,6 +24,9 @@ describe('Navbar', () => {
     for (const label of NAV_LABELS) {
       expect(within(nav).getByRole('link', { name: label })).toBeInTheDocument()
     }
+    expect(
+      within(nav).getByRole('link', { name: 'Habilidades' }),
+    ).toHaveAttribute('href', '#habilidades')
     expect(
       within(nav).getByRole('link', { name: 'Proyectos' }),
     ).toHaveAttribute('href', '#proyectos')
