@@ -89,3 +89,31 @@ export interface SkillCategory {
   category: SkillCategoryName
   skills: Skill[]
 }
+
+/**
+ * Flujo de arquitectura resumido de un proyecto, en cuatro etapas encadenadas
+ * (Cliente ➔ API ➔ Persistencia/ERP ➔ QA Gate) para el minidiagrama en pipeline.
+ */
+export interface ArchitectureFlow {
+  frontend: string
+  backend: string
+  databaseOrErp: string
+  qaCheck: string
+}
+
+/** Proyecto destacado del portafolio con su minidiagrama de arquitectura. */
+export interface Project {
+  id: string
+  title: string
+  /** Etiqueta corta de dominio mostrada como kicker de la tarjeta. */
+  badge: string
+  summary: string
+  architecture: ArchitectureFlow
+  /** Métrica de negocio destacada en un badge esmeralda. */
+  impactMetric: string
+  stack: string[]
+  githubUrl?: string
+  demoUrl?: string
+  /** Puntos técnicos clave del proyecto. */
+  highlights: string[]
+}
