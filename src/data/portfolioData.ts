@@ -4,6 +4,8 @@ import type {
   NavLink,
   Project,
   SkillCategory,
+  TestCaseResult,
+  TestRunSummary,
 } from '../types'
 
 /** Anclajes de la barra de navegación principal. */
@@ -228,3 +230,83 @@ export const featuredProjects: Project[] = [
     ],
   },
 ]
+
+/**
+ * Casos de prueba representativos del trabajo de QA de Mayckol, usados por el
+ * showcase interactivo. Todos arrancan en estado `idle`.
+ */
+export const qaTestCases: TestCaseResult[] = [
+  {
+    id: 'hana-transaction-notification',
+    suite: 'Integración SAP HANA',
+    testName: 'Valida Transaction Notification en pedidos bloqueados',
+    status: 'idle',
+    durationMs: 312,
+    assertion:
+      'El pedido bloqueado dispara la notificación y revierte el stock reservado.',
+  },
+  {
+    id: 'hana-header-detail-rollback',
+    suite: 'Integración SAP HANA',
+    testName: 'Concilia cabecera y detalle tras un rollback de HANA',
+    status: 'idle',
+    durationMs: 268,
+    assertion: 'Cabecera y líneas quedan consistentes ante un fallo parcial.',
+  },
+  {
+    id: 'stock-concurrent-return',
+    suite: 'Stock Click & Collect',
+    testName: 'Mantiene la consistencia de stock ante devolución concurrente',
+    status: 'idle',
+    durationMs: 401,
+    assertion: 'Dos devoluciones simultáneas nunca dejan el stock en negativo.',
+  },
+  {
+    id: 'stock-reservation-expiry',
+    suite: 'Stock Click & Collect',
+    testName: 'Libera la reserva cuando expira el pedido de retiro',
+    status: 'idle',
+    durationMs: 224,
+    assertion: 'El stock reservado vuelve a disponible al caducar la orden.',
+  },
+  {
+    id: 'auth-payload-sanitization',
+    suite: 'REST API Auth',
+    testName: 'Sanitiza el payload de entrada',
+    status: 'idle',
+    durationMs: 143,
+    assertion: 'Los campos con HTML o SQL embebido se rechazan con HTTP 422.',
+  },
+  {
+    id: 'auth-jwt-validation',
+    suite: 'REST API Auth',
+    testName: 'Rechaza tokens JWT expirados o manipulados',
+    status: 'idle',
+    durationMs: 118,
+    assertion: 'Un token con firma inválida responde HTTP 401.',
+  },
+  {
+    id: 'finance-ledger-balance',
+    suite: 'Finanzas Flutter',
+    testName: 'Calcula balances contables acumulados',
+    status: 'idle',
+    durationMs: 96,
+    assertion: 'El balance final coincide con la suma firmada de los movimientos.',
+  },
+  {
+    id: 'finance-sqlite-persistence',
+    suite: 'Finanzas Flutter',
+    testName: 'Persiste y recupera movimientos en SQLite local',
+    status: 'idle',
+    durationMs: 132,
+    assertion: 'Los movimientos sobreviven a un reinicio en frío de la app.',
+  },
+]
+
+/** Resumen objetivo de una ejecución verde de la suite de QA. */
+export const qaRunSummary: TestRunSummary = {
+  totalTests: qaTestCases.length,
+  passed: qaTestCases.length,
+  coverage: '94.8%',
+  executionTime: '1.84s',
+}

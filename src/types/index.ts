@@ -117,3 +117,24 @@ export interface Project {
   /** Puntos técnicos clave del proyecto. */
   highlights: string[]
 }
+
+/** Estado del ciclo de vida de un caso de prueba en el showcase de QA. */
+export type TestStatus = 'idle' | 'running' | 'passed' | 'failed'
+
+/** Resultado de un caso de prueba individual dentro del showcase de QA. */
+export interface TestCaseResult {
+  id: string
+  suite: string
+  testName: string
+  status: TestStatus
+  durationMs: number
+  assertion: string
+}
+
+/** Resumen agregado de una ejecución completa de la suite de pruebas. */
+export interface TestRunSummary {
+  totalTests: number
+  passed: number
+  coverage: string
+  executionTime: string
+}
