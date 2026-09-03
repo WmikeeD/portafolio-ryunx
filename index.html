@@ -5,6 +5,15 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>portafolio-ryunx</title>
+    <script>
+      // Sincroniza la clase `dark` antes del primer render para evitar el flash.
+      // Por defecto: oscuro (la clase ya viene en <html>); solo la quitamos si el usuario eligió claro.
+      try {
+        if (localStorage.getItem('theme') === 'light') {
+          document.documentElement.classList.remove('dark')
+        }
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <div id="root"></div>

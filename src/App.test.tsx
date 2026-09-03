@@ -3,11 +3,14 @@ import { describe, expect, it } from 'vitest'
 import App from './App.tsx'
 
 describe('App', () => {
-  it('renderiza el título del portafolio', () => {
+  it('ensambla la navegación principal y el hero', () => {
     render(<App />)
 
     expect(
-      screen.getByRole('heading', { name: /portafolio-ryunx/i }),
+      screen.getByRole('navigation', { name: /principal/i }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { level: 1, name: /mayckol rodríguez/i }),
     ).toBeInTheDocument()
   })
 })

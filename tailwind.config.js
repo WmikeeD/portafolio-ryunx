@@ -7,7 +7,7 @@ export default {
       colors: {
         brand: {
           dark: '#0B0F19',
-          surface: '#111827',
+          card: '#111827',
           primary: '#38BDF8',
           secondary: '#10B981',
         },

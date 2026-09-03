@@ -1,13 +1,14 @@
+import Navbar from './components/layout/Navbar'
+import Hero from './components/sections/Hero'
+
 function App() {
   return (
-    <main className="flex min-h-svh flex-col items-center justify-center gap-4 bg-brand-dark px-6 text-center">
-      <h1 className="text-4xl font-semibold tracking-tight text-brand-primary sm:text-5xl">
-        portafolio-ryunx
-      </h1>
-      <p className="max-w-prose text-slate-400">
-        Base del proyecto lista: React + TypeScript + Vite + Tailwind CSS + Vitest.
-      </p>
-    </main>
+    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-brand-dark dark:text-slate-100 transition-colors duration-300">
+      <Navbar />
+      <main>
+        <Hero />
+      </main>
+    </div>
   )
 }
 
