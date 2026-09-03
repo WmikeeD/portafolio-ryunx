@@ -24,4 +24,15 @@ describe('App', () => {
       screen.getByRole('heading', { level: 2, name: /habilidades/i }),
     ).toBeInTheDocument()
   })
+
+  it('incluye la sección de proyectos (#proyectos) en el árbol principal', () => {
+    const { container } = render(<App />)
+
+    const projectsSection = container.querySelector('#proyectos')
+    expect(projectsSection).toBeInTheDocument()
+    expect(projectsSection?.tagName).toBe('SECTION')
+    expect(
+      screen.getByRole('heading', { level: 2, name: /proyectos destacados/i }),
+    ).toBeInTheDocument()
+  })
 })

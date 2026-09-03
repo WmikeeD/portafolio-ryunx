@@ -1,4 +1,10 @@
-import type { Experience, HeroData, NavLink, SkillCategory } from '../types'
+import type {
+  Experience,
+  HeroData,
+  NavLink,
+  Project,
+  SkillCategory,
+} from '../types'
 
 /** Anclajes de la barra de navegación principal. */
 export const navLinks: NavLink[] = [
@@ -146,6 +152,79 @@ export const skillCategories: SkillCategory[] = [
       { name: 'Git', icon: 'Git' },
       { name: 'GitHub Actions', icon: 'CI' },
       { name: 'Claude Code / Agentes IA', icon: 'IA' },
+    ],
+  },
+]
+
+/** Proyectos destacados de Mayckol Rodríguez, cada uno con su flujo de arquitectura. */
+export const featuredProjects: Project[] = [
+  {
+    id: 'logistica-erp-sync',
+    title: 'Plataforma de Digitalización Logística & ERP Sync',
+    badge: 'Logística · ERP',
+    summary:
+      'Digitalización de hojas de ruta con sincronización transaccional al ERP corporativo y trazabilidad en tiempo real.',
+    architecture: {
+      frontend: 'Vue.js 3',
+      backend: 'Laravel API REST',
+      databaseOrErp: 'SAP HANA DB (Transaction Notification)',
+      qaCheck: 'Testing de integración de endpoints + consistencia SQL',
+    },
+    impactMetric:
+      'Reducción del 35% en carga operativa manual y trazabilidad en tiempo real.',
+    stack: ['Vue.js', 'Laravel', 'SAP HANA', 'MariaDB', 'REST APIs', 'Postman'],
+    highlights: [
+      'Integración con SAP HANA vía Transaction Notification para garantizar consistencia.',
+      'Eliminación de la doble digitación entre la operación de campo y el ERP.',
+      'Trazabilidad de hojas de ruta disponible en tiempo real.',
+    ],
+  },
+  {
+    id: 'motor-stock-omnicanal',
+    title: 'Motor Transaccional de Stock & Omnicanalidad (Click & Collect)',
+    badge: 'Omnicanalidad · Retail',
+    summary:
+      'Motor de stock para Click & Collect con liberación automática y sincronización directa de devoluciones entre canales.',
+    architecture: {
+      frontend: 'Single Page App',
+      backend: 'Microservicios en Java / Laravel',
+      databaseOrErp: 'MariaDB + Triggers de Stock',
+      qaCheck: 'Pruebas de regresión y concurrencia',
+    },
+    impactMetric:
+      '30% menos incidencias administrativas y sincronización directa de devoluciones.',
+    stack: [
+      'Java',
+      'Laravel',
+      'MariaDB',
+      'Transaction Triggers',
+      'Integration Testing',
+    ],
+    highlights: [
+      'Liberación automática de stock condicionada al ciclo de vida del pedido.',
+      'Triggers de stock en MariaDB para mantener consistencia bajo concurrencia.',
+      'Sincronización directa de devoluciones entre los canales de venta.',
+    ],
+  },
+  {
+    id: 'app-financiera-flutter',
+    title: 'App Móvil Financiera con Persistencia Local',
+    badge: 'Mobile · Fintech',
+    summary:
+      'Aplicación financiera offline-first en Flutter con estado predecible y arquitectura limpia.',
+    architecture: {
+      frontend: 'UI Flutter/Dart',
+      backend: 'BLoC/Provider State Management',
+      databaseOrErp: 'Persistencia local SQLite/Hive',
+      qaCheck: 'Pruebas unitarias de lógica contable',
+    },
+    impactMetric:
+      'Control de finanzas offline-first con sincronización segura y arquitectura limpia.',
+    stack: ['Flutter', 'Dart', 'SQLite', 'Clean Architecture', 'Unit Testing'],
+    highlights: [
+      'Persistencia local con SQLite/Hive para operar sin conexión.',
+      'Gestión de estado con BLoC/Provider para una lógica contable predecible.',
+      'Capas desacopladas siguiendo Clean Architecture.',
     ],
   },
 ]
