@@ -13,4 +13,15 @@ describe('App', () => {
       screen.getByRole('heading', { level: 1, name: /mayckol rodríguez/i }),
     ).toBeInTheDocument()
   })
+
+  it('compone las secciones de experiencia y habilidades bajo el hero', () => {
+    render(<App />)
+
+    expect(
+      screen.getByRole('heading', { level: 2, name: /experiencia empresarial/i }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { level: 2, name: /habilidades/i }),
+    ).toBeInTheDocument()
+  })
 })
