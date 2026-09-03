@@ -49,4 +49,13 @@ describe('App', () => {
       }),
     ).toBeInTheDocument()
   })
+
+  it('cierra la estructura con la sección de contacto (#contacto) y el footer', () => {
+    const { container } = render(<App />)
+
+    const contactSection = container.querySelector('#contacto')
+    expect(contactSection).toBeInTheDocument()
+    expect(contactSection?.tagName).toBe('SECTION')
+    expect(screen.getByRole('contentinfo')).toBeInTheDocument()
+  })
 })
