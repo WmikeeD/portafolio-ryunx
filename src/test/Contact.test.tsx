@@ -1,8 +1,16 @@
 import { fireEvent, render, screen } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import Contact from '../components/sections/Contact'
 
 describe('Contact', () => {
+  beforeEach(() => {
+    globalThis.fetch = vi.fn()
+  })
+
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
+
   it('renderiza la información de contacto directa', () => {
     render(<Contact />)
 
@@ -64,7 +72,13 @@ describe('Contact', () => {
     ).toBeInTheDocument()
   })
 
-  it('acepta datos válidos y muestra la confirmación de éxito', async () => {
+  it('acepta datos válidos, llama a /api/contact y muestra la confirmación de éxito', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ success: true, message: 'Correo enviado correctamente' }),
+    })
+    globalThis.fetch = fetchMock
+
     render(<Contact />)
 
     fireEvent.change(screen.getByLabelText('Nombre'), {
@@ -84,5 +98,65 @@ describe('Contact', () => {
 
     const status = await screen.findByRole('status', {}, { timeout: 2000 })
     expect(status).toHaveTextContent(/¡gracias, mayckol rodríguez!/i)
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      '/api/contact',
+      expect.objectContaining({
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    )
+  })
+
+  it('muestra un error accesible cuando la API de contacto responde con fallo', async () => {
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      ok: false,
+      json: async () => ({ success: false, message: 'Error interno de configuración del servidor.' }),
+    })
+
+    render(<Contact />)
+
+    fireEvent.change(screen.getByLabelText('Nombre'), {
+      target: { value: 'Mayckol Rodríguez' },
+    })
+    fireEvent.change(screen.getByLabelText('Correo electrónico'), {
+      target: { value: 'mayckol10r.s@gmail.com' },
+    })
+    fireEvent.change(screen.getByLabelText('Asunto'), {
+      target: { value: 'Propuesta de rol Full-Stack' },
+    })
+    fireEvent.change(screen.getByLabelText('Mensaje'), {
+      target: { value: 'Hola Mayckol, me gustaría conversar sobre una vacante.' },
+    })
+
+    fireEvent.click(screen.getByRole('button', { name: /enviar mensaje/i }))
+
+    const alert = await screen.findByRole('alert')
+    expect(alert).toHaveTextContent(/no se pudo enviar tu mensaje/i)
+    expect(screen.queryByRole('status')).not.toBeInTheDocument()
+  })
+
+  it('muestra un error accesible cuando la petición de red falla', async () => {
+    globalThis.fetch = vi.fn().mockRejectedValue(new Error('Network error'))
+
+    render(<Contact />)
+
+    fireEvent.change(screen.getByLabelText('Nombre'), {
+      target: { value: 'Mayckol Rodríguez' },
+    })
+    fireEvent.change(screen.getByLabelText('Correo electrónico'), {
+      target: { value: 'mayckol10r.s@gmail.com' },
+    })
+    fireEvent.change(screen.getByLabelText('Asunto'), {
+      target: { value: 'Propuesta de rol Full-Stack' },
+    })
+    fireEvent.change(screen.getByLabelText('Mensaje'), {
+      target: { value: 'Hola Mayckol, me gustaría conversar sobre una vacante.' },
+    })
+
+    fireEvent.click(screen.getByRole('button', { name: /enviar mensaje/i }))
+
+    const alert = await screen.findByRole('alert')
+    expect(alert).toHaveTextContent(/no se pudo enviar tu mensaje/i)
   })
 })
