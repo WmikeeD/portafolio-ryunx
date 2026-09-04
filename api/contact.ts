@@ -1,42 +1,97 @@
 import type { IncomingMessage, ServerResponse } from 'node:http'
 import { Resend } from 'resend'
-import { contactSchema, type ContactFormData } from '../src/types/contact'
+import { z } from 'zod'
 
-const JSON_CONTENT_TYPE = 'application/json'
-const MAX_BODY_BYTES = 1_000_000
 const RECIPIENT_EMAIL = 'mayckol10r.s@gmail.com'
 const SENDER = 'Portfolio Contact <onboarding@resend.dev>'
 
-interface ContactResponseBody {
-  success: boolean
-  message: string
-  errors?: Record<string, string>
+const CONTROL_CHAR_MAX = 31
+const DELETE_CHAR = 127
+const TAB = 9
+const LINE_FEED = 10
+const CARRIAGE_RETURN = 13
+
+/**
+ * Duplicado intencional de `src/types/contact.ts`: este endpoint debe ser
+ * 100% autocontenido, ya que el runtime de Vercel empaqueta `api/` de forma
+ * aislada y no incluye `src/` en el contenedor de producción.
+ */
+function sanitizeFreeText(value: string): string {
+  const withoutTags = value.replace(/[<>]/g, '')
+
+  const printable = Array.from(withoutTags)
+    .filter((char) => {
+      const code = char.codePointAt(0) ?? 0
+      if (code === TAB || code === LINE_FEED || code === CARRIAGE_RETURN) {
+        return true
+      }
+      return code > CONTROL_CHAR_MAX && code !== DELETE_CHAR
+    })
+    .join('')
+
+  return printable.trim()
 }
 
-function sendJson(
-  res: ServerResponse,
-  statusCode: number,
-  body: ContactResponseBody,
-): void {
-  res.statusCode = statusCode
-  res.setHeader('Content-Type', JSON_CONTENT_TYPE)
-  res.end(JSON.stringify(body))
-}
+const nameField = z
+  .string()
+  .trim()
+  .min(3, 'El nombre debe tener al menos 3 caracteres.')
+  .max(80, 'El nombre no puede superar los 80 caracteres.')
+  .transform(sanitizeFreeText)
+  .pipe(
+    z
+      .string()
+      .min(3, 'El nombre contiene caracteres no válidos.')
+      .max(80, 'El nombre no puede superar los 80 caracteres.'),
+  )
 
-async function readRequestBody(req: IncomingMessage): Promise<string> {
-  const chunks: Buffer[] = []
-  let totalBytes = 0
+const emailField = z
+  .string()
+  .trim()
+  .toLowerCase()
+  .min(1, 'El correo electrónico es obligatorio.')
+  .pipe(z.email('Introduce un correo electrónico válido.'))
 
-  for await (const chunk of req) {
-    const buffer = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk)
-    totalBytes += buffer.byteLength
-    if (totalBytes > MAX_BODY_BYTES) {
-      throw new Error('Cuerpo de la petición demasiado grande.')
-    }
-    chunks.push(buffer)
-  }
+const subjectField = z
+  .string()
+  .trim()
+  .min(4, 'El asunto debe tener al menos 4 caracteres.')
+  .max(100, 'El asunto no puede superar los 100 caracteres.')
+  .transform(sanitizeFreeText)
+  .pipe(
+    z
+      .string()
+      .min(4, 'El asunto contiene caracteres no válidos.')
+      .max(100, 'El asunto no puede superar los 100 caracteres.'),
+  )
 
-  return Buffer.concat(chunks).toString('utf-8')
+const messageField = z
+  .string()
+  .trim()
+  .min(10, 'El mensaje debe tener al menos 10 caracteres.')
+  .max(1000, 'El mensaje no puede superar los 1000 caracteres.')
+  .transform(sanitizeFreeText)
+  .pipe(
+    z
+      .string()
+      .min(10, 'El mensaje contiene caracteres no válidos.')
+      .max(1000, 'El mensaje no puede superar los 1000 caracteres.'),
+  )
+
+const contactSchema = z.object({
+  name: nameField,
+  email: emailField,
+  subject: subjectField,
+  message: messageField,
+})
+
+type ContactFormData = z.infer<typeof contactSchema>
+
+type ContactRequest = IncomingMessage & { body?: unknown }
+
+interface ContactResponse extends ServerResponse {
+  status(statusCode: number): ContactResponse
+  json(body: unknown): ContactResponse
 }
 
 function escapeHtml(value: string): string {
@@ -83,61 +138,39 @@ function buildEmailHtml(data: ContactFormData): string {
   `.trim()
 }
 
-function extractFieldErrors(
-  error: import('zod').ZodError,
-): Record<string, string> {
-  const fieldErrors: Record<string, string> = {}
-  for (const issue of error.issues) {
-    const key = issue.path[0]
-    if (typeof key === 'string' && !(key in fieldErrors)) {
-      fieldErrors[key] = issue.message
-    }
-  }
-  return fieldErrors
-}
-
 export default async function handler(
-  req: IncomingMessage,
-  res: ServerResponse,
+  req: ContactRequest,
+  res: ContactResponse,
 ): Promise<void> {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST')
-    sendJson(res, 405, { success: false, message: 'Método no permitido.' })
+    res.status(405).json({ error: 'Método no permitido' })
     return
   }
 
   const apiKey = process.env.RESEND_API_KEY
   if (!apiKey) {
-    sendJson(res, 500, {
-      success: false,
-      message: 'Error interno de configuración del servidor.',
-    })
+    res.status(500).json({ error: 'Error interno de configuración del servidor.' })
     return
   }
 
-  let payload: unknown
-  try {
-    const rawBody = await readRequestBody(req)
-    payload = rawBody.length > 0 ? JSON.parse(rawBody) : {}
-  } catch {
-    sendJson(res, 400, {
-      success: false,
-      message: 'Cuerpo de la petición inválido.',
-    })
+  let body: unknown = req.body
+  if (typeof body === 'string') {
+    try {
+      body = JSON.parse(body)
+    } catch {
+      res.status(400).json({ error: 'Cuerpo de la petición inválido.' })
+      return
+    }
+  }
+
+  const result = contactSchema.safeParse(body)
+  if (!result.success) {
+    res.status(400).json({ error: 'Datos inválidos', details: result.error.format() })
     return
   }
 
-  const parsed = contactSchema.safeParse(payload)
-  if (!parsed.success) {
-    sendJson(res, 400, {
-      success: false,
-      message: 'Los datos del formulario no son válidos.',
-      errors: extractFieldErrors(parsed.error),
-    })
-    return
-  }
-
-  const { name, email, subject } = parsed.data
+  const { name, email, subject } = result.data
 
   try {
     const resend = new Resend(apiKey)
@@ -146,25 +179,20 @@ export default async function handler(
       to: [RECIPIENT_EMAIL],
       replyTo: email,
       subject: `[Nuevo Contacto Web] ${subject} - ${name}`,
-      html: buildEmailHtml(parsed.data),
+      html: buildEmailHtml(result.data),
     })
 
     if (error) {
-      sendJson(res, 500, {
-        success: false,
-        message: 'No se pudo enviar el correo. Inténtalo de nuevo más tarde.',
+      res.status(500).json({
+        error: 'No se pudo enviar el correo. Inténtalo de nuevo más tarde.',
       })
       return
     }
 
-    sendJson(res, 200, {
-      success: true,
-      message: 'Correo enviado correctamente',
-    })
+    res.status(200).json({ success: true, message: 'Correo enviado correctamente' })
   } catch {
-    sendJson(res, 500, {
-      success: false,
-      message: 'No se pudo enviar el correo. Inténtalo de nuevo más tarde.',
+    res.status(500).json({
+      error: 'No se pudo enviar el correo. Inténtalo de nuevo más tarde.',
     })
   }
 }
