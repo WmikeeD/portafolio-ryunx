@@ -17,8 +17,6 @@ import {
 import { contactInfo } from '../../data/portfolioData'
 import { contactSchema, type ContactFormData } from '../../types/contact'
 
-const SUBMIT_DELAY_MS = 600
-
 const fieldClass =
   'rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition-colors placeholder:text-slate-400 focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/30 aria-[invalid=true]:border-red-400 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-100 dark:placeholder:text-slate-500'
 
@@ -157,8 +155,12 @@ function ContactChannels() {
   )
 }
 
+const GENERIC_SUBMIT_ERROR =
+  'No se pudo enviar tu mensaje. Inténtalo de nuevo más tarde.'
+
 function Contact() {
   const [submittedName, setSubmittedName] = useState<string | null>(null)
+  const [submitError, setSubmitError] = useState<string | null>(null)
 
   const {
     register,
@@ -172,13 +174,25 @@ function Contact() {
   })
 
   const onSubmit = async (data: ContactFormData): Promise<void> => {
-    // Modo preparado: simula la latencia del envío. Fase 5 conectará este punto
-    // con el endpoint de Resend/Vercel usando `data` ya sanitizado.
-    await new Promise<void>((resolve) => {
-      window.setTimeout(() => resolve(), SUBMIT_DELAY_MS)
-    })
-    setSubmittedName(data.name)
-    reset()
+    setSubmitError(null)
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      })
+
+      if (!response.ok) {
+        setSubmitError(GENERIC_SUBMIT_ERROR)
+        return
+      }
+
+      setSubmittedName(data.name)
+      reset()
+    } catch {
+      setSubmitError(GENERIC_SUBMIT_ERROR)
+    }
   }
 
   return (
@@ -239,6 +253,16 @@ function Contact() {
                 noValidate
                 className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-brand-card/90"
               >
+                {submitError ? (
+                  <p
+                    role="alert"
+                    className="flex items-center gap-1.5 rounded-lg border border-red-400/40 bg-red-500/10 px-3 py-2 text-sm font-medium text-red-600 dark:text-red-400"
+                  >
+                    <AlertCircle className="size-4 shrink-0" aria-hidden="true" />
+                    {submitError}
+                  </p>
+                ) : null}
+
                 <Field name="name" label="Nombre" error={errors.name?.message}>
                   <input
                     id="name"
