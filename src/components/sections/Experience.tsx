@@ -1,5 +1,5 @@
 import { motion, type Variants } from 'framer-motion'
-import { experiences } from '../../data/portfolioData'
+import { corporateExperience } from '../../data/portfolioData'
 
 const timelineVariants: Variants = {
   hidden: {},
@@ -14,7 +14,7 @@ const entryVariants: Variants = {
 function Experience() {
   return (
     <section id="experiencia" className="px-6 py-24">
-      <div className="mx-auto max-w-5xl">
+      <div className="mx-auto max-w-4xl">
         <header className="mb-14 flex flex-col gap-3">
           <p className="text-sm font-semibold uppercase tracking-widest text-sky-700 dark:text-brand-primary">
             Trayectoria
@@ -23,109 +23,84 @@ function Experience() {
             Experiencia empresarial
           </h2>
           <p className="max-w-2xl text-slate-600 dark:text-slate-400">
-            Casos de ingeniería con impacto medible en operaciones críticas e
-            integración ERP.
+            Timeline corporativo centrado en el impacto ejecutivo: plataformas críticas,
+            integración ERP y gobernanza de datos transaccionales.
           </p>
         </header>
 
         <motion.ol
-          className="relative flex flex-col gap-16 border-l border-slate-200 pl-8 dark:border-slate-800"
+          className="relative flex flex-col gap-12 border-l border-slate-200 pl-8 dark:border-slate-800"
           variants={timelineVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.15 }}
         >
-          {experiences.map((exp) => (
-            <motion.li key={exp.company} variants={entryVariants} className="relative">
+          {corporateExperience.map((experience) => (
+            <motion.li
+              key={experience.company}
+              variants={entryVariants}
+              className="relative"
+            >
               <span
                 aria-hidden="true"
-                className="absolute -left-8 top-1.5 size-3 -translate-x-1/2 rounded-full border-2 border-brand-primary bg-slate-50 dark:bg-brand-dark"
+                className="absolute -left-8 top-6 size-3 -translate-x-1/2 rounded-full border-2 border-brand-primary bg-slate-50 dark:bg-brand-dark"
               />
 
-              <div className="flex flex-col gap-1">
-                <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                  <h3 className="text-xl font-bold text-slate-900 dark:text-white">
-                    {exp.company}
-                  </h3>
-                  <span className="text-sm font-medium text-slate-500 dark:text-slate-500">
-                    {exp.period}
-                  </span>
-                </div>
-                <p className="text-sm font-semibold text-sky-700 dark:text-brand-primary">
-                  {exp.role}
-                </p>
-                <p className="mt-1 max-w-2xl text-sm text-slate-600 dark:text-slate-400">
-                  {exp.summary}
-                </p>
-              </div>
+              <article className="flex flex-col gap-5 rounded-2xl border border-slate-200 bg-white/90 p-6 transition-colors dark:border-slate-800 dark:bg-brand-card/90">
+                <header className="flex flex-col gap-1.5">
+                  <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                    <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+                      {experience.company}
+                    </h3>
+                    <span className="text-sm font-medium text-slate-500 dark:text-slate-500">
+                      {experience.period}
+                    </span>
+                  </div>
+                  <p className="text-sm font-semibold text-sky-700 dark:text-brand-primary">
+                    {experience.role}
+                  </p>
+                  <p className="text-xs font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">
+                    {experience.location}
+                  </p>
+                </header>
 
-              {exp.metrics.length > 0 && (
+                <p className="max-w-2xl text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+                  {experience.executiveSummary}
+                </p>
+
                 <ul
-                  aria-label={`Métricas de impacto en ${exp.company}`}
-                  className="mt-4 flex flex-wrap gap-2"
+                  aria-label={`Logros clave en ${experience.company}`}
+                  className="flex flex-col gap-4"
                 >
-                  {exp.metrics.map((metric) => (
+                  {experience.achievements.map((achievement) => (
                     <li
-                      key={metric.label}
-                      className="flex items-baseline gap-2 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-1.5"
+                      key={achievement.metric}
+                      className="flex flex-col gap-2 sm:flex-row sm:gap-4"
                     >
-                      <span className="text-sm font-bold text-emerald-600 dark:text-brand-secondary">
-                        {metric.value}
+                      <span className="inline-flex h-fit shrink-0 items-center self-start rounded-md border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-bold text-emerald-600 dark:text-brand-secondary sm:w-52">
+                        {achievement.metric}
                       </span>
-                      <span className="text-xs text-slate-600 dark:text-slate-400">
-                        {metric.label}
-                      </span>
+                      <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+                        {achievement.detail}
+                      </p>
                     </li>
                   ))}
                 </ul>
-              )}
 
-              <div className="mt-6 grid gap-4 md:grid-cols-2">
-                {exp.cases.map((item) => (
-                  <article
-                    key={item.title}
-                    className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white/80 p-5 backdrop-blur-md dark:border-slate-800 dark:bg-brand-card/80"
-                  >
-                    <h4 className="text-sm font-bold text-slate-900 dark:text-white">
-                      {item.title}
-                    </h4>
-
-                    <div className="flex flex-col gap-1">
-                      <p className="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">
-                        El reto
-                      </p>
-                      <p className="text-sm text-slate-600 dark:text-slate-400">
-                        {item.challenge}
-                      </p>
-                    </div>
-
-                    <div className="flex flex-col gap-1">
-                      <p className="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">
-                        La arquitectura
-                      </p>
-                      <p className="text-sm text-slate-600 dark:text-slate-400">
-                        {item.solution}
-                      </p>
-                    </div>
-
-                    <ul className="mt-auto flex flex-wrap gap-1.5 pt-2">
-                      {item.technologies.map((tech) => (
-                        <li
-                          key={tech}
-                          className="rounded-md border border-slate-200 bg-slate-50 px-2 py-0.5 text-[0.7rem] font-medium text-slate-600 dark:border-slate-700 dark:bg-slate-800/60 dark:text-slate-300"
-                        >
-                          {tech}
-                        </li>
-                      ))}
-                    </ul>
-                  </article>
-                ))}
-              </div>
-
-              <p className="mt-5 text-xs text-slate-500 dark:text-slate-500">
-                <span className="font-semibold uppercase tracking-wide">Stack:</span>{' '}
-                {exp.stack.join(' · ')}
-              </p>
+                <ul className="mt-auto flex flex-wrap items-center gap-1.5 pt-1">
+                  <li className="mr-1 text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">
+                    Stack
+                  </li>
+                  {experience.stack.map((tech) => (
+                    <li
+                      key={tech}
+                      className="rounded-md border border-slate-200 bg-slate-50 px-2 py-0.5 text-[0.7rem] font-medium text-slate-600 dark:border-slate-700 dark:bg-slate-800/60 dark:text-slate-300"
+                    >
+                      {tech}
+                    </li>
+                  ))}
+                </ul>
+              </article>
             </motion.li>
           ))}
         </motion.ol>

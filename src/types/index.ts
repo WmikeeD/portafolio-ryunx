@@ -36,35 +36,25 @@ export interface HeroData {
   socials: SocialLink[]
 }
 
-/** Métrica de impacto cuantificable destacada como badge dentro de una experiencia. */
-export interface ImpactMetric {
-  value: string
-  label: string
+/** Logro corporativo estructurado: métrica de impacto y su detalle explicativo. */
+export interface CorporateAchievement {
+  /** Titular de impacto mostrado como badge esmeralda (p. ej. "-35% Tiempos de Despacho"). */
+  metric: string
+  /** Explicación del logro: qué se hizo y cómo se consiguió el impacto. */
+  detail: string
 }
 
-/** Caso de ingeniería concreto: reto de negocio y arquitectura de la solución. */
-export interface ExperienceCase {
-  title: string
-  /** Descripción técnica del problema de negocio a resolver. */
-  challenge: string
-  /** Solución implementada y decisiones de arquitectura relevantes. */
-  solution: string
-  /** Tecnologías empleadas específicamente en este caso. */
-  technologies: string[]
-}
-
-/** Experiencia profesional en una empresa u organización. */
-export interface Experience {
-  company: string
+/** Hito de experiencia profesional dentro del timeline corporativo. */
+export interface CorporateExperience {
   role: string
-  /** Periodo de la colaboración, p. ej. "2023 - 2026". */
+  company: string
+  /** Periodo de la colaboración, p. ej. "Diciembre 2023 – Julio 2026". */
   period: string
-  /** Resumen ejecutivo de la responsabilidad principal. */
-  summary: string
-  /** Métricas de impacto cuantificable; puede estar vacío. */
-  metrics: ImpactMetric[]
-  /** Casos de ingeniería representativos. */
-  cases: ExperienceCase[]
+  location: string
+  /** Resumen ejecutivo de la responsabilidad y el alcance del rol. */
+  executiveSummary: string
+  /** Logros cuantificados con métrica y detalle. */
+  achievements: CorporateAchievement[]
   /** Stack tecnológico transversal de la experiencia. */
   stack: string[]
 }
