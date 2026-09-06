@@ -1,6 +1,6 @@
 import type {
   ContactDetails,
-  Experience,
+  CorporateExperience,
   HeroData,
   NavLink,
   Project,
@@ -43,72 +43,68 @@ export const heroData: HeroData = {
   ],
 }
 
-/** Experiencia empresarial de Mayckol Rodríguez, ordenada de la más reciente a la más antigua. */
-export const experiences: Experience[] = [
+/**
+ * Experiencia profesional de Mayckol Rodríguez como timeline corporativo,
+ * centrada en el impacto ejecutivo y sin duplicar el detalle de Proyectos.
+ */
+export const corporateExperience: CorporateExperience[] = [
   {
-    company: 'Consultor Independiente & QA',
-    role: 'Consultor de Software & QA Specialist',
-    period: '2026 - Presente',
-    summary:
-      'Aseguramiento de calidad y desarrollo de producto para clientes independientes.',
-    metrics: [],
-    cases: [
+    role: 'Consultor de Software y QA Independiente',
+    company: 'Servicios Profesionales / Freelance',
+    period: 'Julio 2026 – Presente',
+    location: 'Santiago, Chile',
+    executiveSummary:
+      'Servicios especializados de arquitectura, aseguramiento de calidad (QA) y desarrollo para soluciones web y móviles con foco en resiliencia, cobertura de testing y consistencia lógica.',
+    achievements: [
       {
-        title: 'Aseguramiento de calidad end-to-end',
-        challenge:
-          'Los clientes necesitaban liberar versiones sin regresiones ni inconsistencias de datos entre servicios.',
-        solution:
-          'Ejecuté testing funcional, de regresión y pruebas de integración de APIs, con validación de consistencia SQL sobre las bases de datos implicadas.',
-        technologies: ['Testing funcional', 'Regresión', 'API Testing', 'SQL'],
+        metric: 'Cobertura & Confiabilidad',
+        detail:
+          'Diseño y ejecución de estrategias de prueba end-to-end: matrices funcionales, testing de regresión, validación de endpoints REST y consistencia transaccional con SQL.',
       },
       {
-        title: 'App financiera nativa en Flutter',
-        challenge:
-          'Se requería una aplicación financiera nativa con datos disponibles sin conexión.',
-        solution:
-          'Desarrollé una app nativa en Flutter/Dart con persistencia local, operando bajo un enfoque offline-first.',
-        technologies: ['Flutter', 'Dart', 'Persistencia local'],
+        metric: 'Arquitectura Offline-First',
+        detail:
+          'Desarrollo de aplicaciones móviles financieras nativas con Flutter y Dart, aplicando Clean Architecture, patrones de gestión de estado y persistencia local de alta fidelidad.',
       },
     ],
-    stack: ['Flutter', 'Dart', 'SQL', 'API Testing'],
+    stack: [
+      'QA Automation',
+      'Flutter / Dart',
+      'Postman',
+      'SQL Validation',
+      'Clean Architecture',
+    ],
   },
   {
+    role: 'Desarrollador de Software y Especialista Técnico Full-Stack',
     company: 'Atika S.A.',
-    role: 'Desarrollador Full-Stack',
-    period: '2023 - 2026',
-    summary:
-      'Desarrollo de soluciones internas de logística y retail con integración al ERP corporativo SAP HANA.',
-    metrics: [
-      { value: '-35%', label: 'carga operativa manual en logística' },
-      { value: '-30%', label: 'errores administrativos' },
-    ],
-    cases: [
+    period: 'Diciembre 2023 – Julio 2026',
+    location: 'Santiago, Chile',
+    executiveSummary:
+      'Liderazgo en el diseño, desarrollo y estabilización de plataformas corporativas críticas integradas al núcleo ERP SAP HANA, impulsando la transformación digital operativa y la gobernanza de datos transaccionales en logística y retail.',
+    achievements: [
       {
-        title: 'Digitalización de hojas de ruta',
-        challenge:
-          'Las hojas de ruta se gestionaban en papel, sin trazabilidad ni sincronización con el ERP corporativo.',
-        solution:
-          'Digitalicé el flujo completo e integré la captura con SAP HANA, eliminando la doble digitación y habilitando trazabilidad en tiempo real.',
-        technologies: ['Vue.js', 'Laravel', 'SAP HANA', 'REST APIs'],
+        metric: '-35% Tiempos de Despacho',
+        detail:
+          'Transformación digital de la cadena logística mediante la sincronización en tiempo real entre operaciones de campo y SAP HANA, eliminando el uso de planillas manuales y la doble digitación.',
       },
       {
-        title: 'Click & Collect con liberación automática de stock',
-        challenge:
-          'El stock reservado para retiro en tienda no se liberaba de forma fiable, bloqueando inventario disponible para la venta.',
-        solution:
-          'Implementé un sistema Click & Collect con liberación automática de stock condicionada al ciclo de vida del pedido.',
-        technologies: ['Vue.js', 'Laravel', 'MariaDB', 'REST APIs'],
+        metric: '-30% Brechas de Inventario',
+        detail:
+          'Optimización de los flujos de retail y omnicanalidad, asegurando la consistencia del stock distribuido y la conciliación automática de devoluciones entre sucursales y ERP central.',
       },
       {
-        title: 'Arquitectura transaccional sobre SAP HANA y MariaDB',
-        challenge:
-          'Operaciones críticas cruzaban SAP HANA y MariaDB sin garantías de consistencia ante fallos parciales.',
-        solution:
-          'Diseñé una arquitectura transaccional apoyada en Transaction Notification sobre SAP HANA, coordinando la consistencia con MariaDB.',
-        technologies: ['SAP HANA', 'MariaDB', 'Java', 'Transaction Notification'],
+        metric: 'Consistencia ACID',
+        detail:
+          'Implementación de reglas de validación transaccional sobre el ERP (SAP HANA Transaction Notification) y bases de datos periféricas, blindando compras críticas contra datos corruptos.',
+      },
+      {
+        metric: 'Productividad & IA',
+        detail:
+          'Modernización de procesos internos de soporte y optimización del ciclo de vida del software mediante la integración de agentes de IA en flujos de desarrollo y troubleshooting técnico.',
       },
     ],
-    stack: ['Vue.js', 'Laravel', 'Java', 'SAP HANA', 'MariaDB', 'REST APIs'],
+    stack: ['SAP HANA', 'Laravel', 'Vue.js', 'React','Java', 'MariaDB', 'REST APIs'],
   },
 ]
 
