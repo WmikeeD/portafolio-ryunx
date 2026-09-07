@@ -26,7 +26,7 @@ export const heroData: HeroData = {
   valueProposition:
     'Especialista en fiabilidad de sistemas críticos, integración ERP (SAP HANA) y calidad de software automatizada',
   metrics: [
-    { value: '-35%', label: 'carga operativa en Atika' },
+    { value: '-35%', label: 'carga operativa' },
     { value: '-30%', label: 'errores administrativos' },
   ],
   ctas: {
@@ -113,14 +113,12 @@ export const corporateExperience: CorporateExperience[] = [
       'Liderazgo en el diseño, desarrollo y estabilización de plataformas corporativas críticas integradas al núcleo ERP SAP HANA, impulsando la transformación digital operativa y la gobernanza de datos transaccionales en logística y retail.',
     achievements: [
       {
-        metric:
-          'Optimización Operativa (-35% tiempos en ruta, menos demoras en entregas a clientes)',
+        metric: 'Optimización Operativa (-35% tiempos en ruta)',
         detail:
           'Transformación digital de la cadena logística mediante la sincronización en tiempo real entre operaciones de campo y SAP HANA, eliminando el uso de planillas manuales y la doble digitación.',
       },
       {
-        metric:
-          'Control de Inventario (-30% discrepancias de stock entre sucursales)',
+        metric: 'Control de Inventario (-30% discrepancias de stock)',
         detail:
           'Optimización de los flujos de retail y omnicanalidad, asegurando la consistencia del stock distribuido y la conciliación automática de devoluciones entre sucursales y ERP central.',
       },
