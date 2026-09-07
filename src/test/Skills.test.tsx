@@ -38,4 +38,13 @@ describe('Skills', () => {
     expect(screen.getByText('Vitest')).toBeInTheDocument()
     expect(screen.queryByText('React')).not.toBeInTheDocument()
   })
+
+  it('incluye GitHub Actions y CI/CD en la pestaña de DevOps & AI Tools', () => {
+    render(<Skills />)
+
+    fireEvent.click(screen.getByRole('tab', { name: 'DevOps & AI Tools' }))
+
+    expect(screen.getByText('GitHub Actions')).toBeInTheDocument()
+    expect(screen.getByText('CI/CD')).toBeInTheDocument()
+  })
 })

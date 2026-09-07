@@ -121,7 +121,7 @@ function ContactChannels() {
               rel="noreferrer noopener"
               className="text-sm text-slate-700 transition-colors hover:text-brand-primary dark:text-slate-300"
             >
-              linkedin.com/in/mayckol-sanchez-a32624122
+              linkedin.com/in/mayckol-rodriguez-sanchez
             </a>
           </span>
         </li>
@@ -157,6 +157,14 @@ function ContactChannels() {
 
 const GENERIC_SUBMIT_ERROR =
   'No se pudo enviar tu mensaje. Inténtalo de nuevo más tarde.'
+
+/** Motivos de contacto, equilibrados entre clientes de negocio y roles técnicos. */
+const SUBJECT_OPTIONS = [
+  'Proyecto / Automatización para mi negocio',
+  'Vacante Full-Stack / QA Lead',
+  'Consultoría Técnica',
+  'Otro',
+] as const
 
 function Contact() {
   const [submittedName, setSubmittedName] = useState<string | null>(null)
@@ -253,6 +261,11 @@ function Contact() {
                 noValidate
                 className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-brand-card/90"
               >
+                <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+                  ¿Buscas mejorar un proceso de tu negocio o cubrir una vacante
+                  técnica? Cuéntame tu desafío.
+                </p>
+
                 {submitError ? (
                   <p
                     role="alert"
@@ -296,16 +309,22 @@ function Contact() {
                   label="Asunto"
                   error={errors.subject?.message}
                 >
-                  <input
+                  <select
                     id="subject"
-                    type="text"
                     aria-invalid={errors.subject ? 'true' : 'false'}
                     aria-describedby={
                       errors.subject ? 'subject-error' : undefined
                     }
                     className={fieldClass}
                     {...register('subject')}
-                  />
+                  >
+                    <option value="">Selecciona el motivo de contacto</option>
+                    {SUBJECT_OPTIONS.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
                 </Field>
 
                 <Field

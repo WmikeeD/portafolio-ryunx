@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import Navbar from '../components/layout/Navbar'
 
 const NAV_LABELS = [
+  'Servicios',
   'Experiencia',
   'Habilidades',
   'Proyectos',
@@ -24,6 +25,9 @@ describe('Navbar', () => {
     for (const label of NAV_LABELS) {
       expect(within(nav).getByRole('link', { name: label })).toBeInTheDocument()
     }
+    expect(
+      within(nav).getByRole('link', { name: 'Servicios' }),
+    ).toHaveAttribute('href', '#servicios')
     expect(
       within(nav).getByRole('link', { name: 'Habilidades' }),
     ).toHaveAttribute('href', '#habilidades')
@@ -72,7 +76,27 @@ describe('Navbar', () => {
 
     const mobileNav = screen.getByRole('navigation', { name: /móvil/i })
     expect(
+      within(mobileNav).getByRole('link', { name: 'Servicios' }),
+    ).toHaveAttribute('href', '#servicios')
+    expect(
       within(mobileNav).getByRole('link', { name: 'Contacto' }),
     ).toHaveAttribute('href', '#contacto')
+  })
+
+  it('cierra el menú móvil al pulsar un enlace de anclaje (Servicios)', () => {
+    render(<Navbar />)
+
+    fireEvent.click(screen.getByRole('button', { name: /abrir menú/i }))
+    const mobileNav = screen.getByRole('navigation', { name: /móvil/i })
+
+    fireEvent.click(within(mobileNav).getByRole('link', { name: 'Servicios' }))
+
+    expect(screen.getByRole('button', { name: /abrir menú/i })).toHaveAttribute(
+      'aria-expanded',
+      'false',
+    )
+    expect(
+      screen.queryByRole('navigation', { name: /móvil/i }),
+    ).not.toBeInTheDocument()
   })
 })
