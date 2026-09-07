@@ -14,6 +14,28 @@ describe('App', () => {
     ).toBeInTheDocument()
   })
 
+  it('monta el fondo global continuo detrás del contenido en z-10', () => {
+    const { container } = render(<App />)
+
+    // El lienzo global se monta una sola vez, como decoración inerte.
+    const canvas = container.querySelector('canvas')
+    expect(canvas).toBeInTheDocument()
+    expect(canvas).toHaveAttribute('aria-hidden', 'true')
+
+    // El contenido de las secciones queda envuelto en la capa z-10.
+    const main = container.querySelector('main')
+    expect(main?.className).toMatch(/relative/)
+    expect(main?.className).toMatch(/z-10/)
+
+    // La navegación y el hero siguen operativos por encima del fondo.
+    expect(
+      screen.getByRole('navigation', { name: /principal/i }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole('button', { name: /activar modo/i }),
+    ).toBeEnabled()
+  })
+
   it('compone las secciones de experiencia y habilidades bajo el hero', () => {
     render(<App />)
 

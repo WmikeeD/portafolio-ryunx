@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion, type Variants } from 'framer-motion'
-import { skillCategories } from '../../data/portfolioData'
+import { skillCategories } from '../../data/skillsData'
 
 const gridVariants: Variants = {
   hidden: {},
@@ -80,9 +80,15 @@ function Skills() {
             >
               <span
                 aria-hidden="true"
-                className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-brand-primary/10 text-xs font-bold text-sky-700 dark:text-brand-primary"
+                className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-slate-100 dark:border-white/10 dark:bg-white/5"
               >
-                {skill.icon}
+                {skill.Icon ? (
+                  <skill.Icon size={20} color={skill.color} className="shrink-0" />
+                ) : (
+                  <span className="font-mono text-xs font-bold">
+                    {skill.initials}
+                  </span>
+                )}
               </span>
               <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
                 {skill.name}

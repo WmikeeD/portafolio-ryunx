@@ -5,7 +5,6 @@ import type {
   HeroData,
   NavLink,
   ShowcaseProject,
-  SkillCategory,
   TestCase,
 } from '../types'
 
@@ -134,53 +133,6 @@ export const corporateExperience: CorporateExperience[] = [
       },
     ],
     stack: ['SAP HANA', 'Laravel', 'Vue.js', 'React','Java', 'MariaDB', 'REST APIs'],
-  },
-]
-
-/** Habilidades técnicas de Mayckol Rodríguez agrupadas por dominio. */
-export const skillCategories: SkillCategory[] = [
-  {
-    category: 'Frontend & Mobile',
-    skills: [
-      { name: 'React', icon: 'Re' },
-      { name: 'Vue.js', icon: 'Vue' },
-      { name: 'TypeScript', icon: 'TS' },
-      { name: 'Flutter', icon: 'Fl' },
-      { name: 'Tailwind CSS', icon: 'Tw' },
-    ],
-  },
-  {
-    category: 'Backend & APIs',
-    skills: [
-      { name: 'Laravel', icon: 'Lv' },
-      { name: 'Java', icon: 'Jv' },
-      { name: 'REST APIs', icon: 'API' },
-    ],
-  },
-  {
-    category: 'Bases de Datos & ERP',
-    skills: [
-      { name: 'SAP HANA', icon: 'SAP' },
-      { name: 'MariaDB', icon: 'Ma' },
-      { name: 'SQL', icon: 'SQL' },
-    ],
-  },
-  {
-    category: 'QA & Testing',
-    skills: [
-      { name: 'Vitest', icon: 'Vi' },
-      { name: 'React Testing Library', icon: 'RTL' },
-      { name: 'Testing de regresión', icon: 'Rg' },
-    ],
-  },
-  {
-    category: 'DevOps & AI Tools',
-    skills: [
-      { name: 'Git', icon: 'Git' },
-      { name: 'GitHub Actions', icon: 'CI' },
-      { name: 'CI/CD', icon: 'CD' },
-      { name: 'Claude Code / Agentes IA', icon: 'IA' },
-    ],
   },
 ]
 

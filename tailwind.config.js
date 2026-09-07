@@ -13,6 +13,15 @@ export default {
           accent: '#F59E0B',
         },
       },
+      keyframes: {
+        breathe: {
+          '0%, 100%': { transform: 'translate(-50%, -50%) scale(1)' },
+          '50%': { transform: 'translate(-50%, -50%) scale(1.12)' },
+        },
+      },
+      animation: {
+        breathe: 'breathe 12s ease-in-out infinite',
+      },
     },
   },
   plugins: [],

@@ -1,3 +1,4 @@
+import GlobalBackground from './components/layout/GlobalBackground'
 import Navbar from './components/layout/Navbar'
 import Hero from './components/sections/Hero'
 import BusinessServices from './components/sections/BusinessServices'
@@ -10,9 +11,10 @@ import Footer from './components/layout/Footer'
 
 function App() {
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-brand-dark dark:text-slate-100 transition-colors duration-300">
+    <div className="min-h-screen text-slate-900 dark:text-slate-100">
+      <GlobalBackground />
       <Navbar />
-      <main>
+      <main className="relative z-10">
         <Hero />
         <BusinessServices />
         <Experience />
