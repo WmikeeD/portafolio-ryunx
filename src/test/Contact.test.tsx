@@ -24,11 +24,11 @@ describe('Contact', () => {
     expect(screen.getByText('Santiago, Chile')).toBeInTheDocument()
     expect(
       screen.getByRole('link', {
-        name: /linkedin\.com\/in\/mayckol-sanchez-a32624122/i,
+        name: /linkedin\.com\/in\/mayckol-rodriguez-sanchez/i,
       }),
     ).toHaveAttribute(
       'href',
-      'https://www.linkedin.com/in/mayckol-sanchez-a32624122',
+      'https://www.linkedin.com/in/mayckol-rodriguez-sanchez',
     )
     expect(
       screen.getByRole('link', { name: /github\.com\/wmikeed/i }),
@@ -48,6 +48,28 @@ describe('Contact', () => {
     expect(
       screen.getByRole('button', { name: /enviar mensaje/i }),
     ).toBeEnabled()
+  })
+
+  it('muestra el texto guía y el selector de asunto con sus opciones', () => {
+    render(<Contact />)
+
+    expect(
+      screen.getByText(
+        /¿buscas mejorar un proceso de tu negocio o cubrir una vacante técnica\?/i,
+      ),
+    ).toBeInTheDocument()
+
+    const subject = screen.getByLabelText('Asunto')
+    expect(subject.tagName).toBe('SELECT')
+
+    for (const option of [
+      'Proyecto / Automatización para mi negocio',
+      'Vacante Full-Stack / QA Lead',
+      'Consultoría Técnica',
+      'Otro',
+    ]) {
+      expect(screen.getByRole('option', { name: option })).toBeInTheDocument()
+    }
   })
 
   it('muestra los errores de validación de Zod al enviar el formulario vacío', async () => {
@@ -88,7 +110,7 @@ describe('Contact', () => {
       target: { value: 'mayckol10r.s@gmail.com' },
     })
     fireEvent.change(screen.getByLabelText('Asunto'), {
-      target: { value: 'Propuesta de rol Full-Stack' },
+      target: { value: 'Vacante Full-Stack / QA Lead' },
     })
     fireEvent.change(screen.getByLabelText('Mensaje'), {
       target: { value: 'Hola Mayckol, me gustaría conversar sobre una vacante.' },
@@ -123,7 +145,7 @@ describe('Contact', () => {
       target: { value: 'mayckol10r.s@gmail.com' },
     })
     fireEvent.change(screen.getByLabelText('Asunto'), {
-      target: { value: 'Propuesta de rol Full-Stack' },
+      target: { value: 'Vacante Full-Stack / QA Lead' },
     })
     fireEvent.change(screen.getByLabelText('Mensaje'), {
       target: { value: 'Hola Mayckol, me gustaría conversar sobre una vacante.' },
@@ -148,7 +170,7 @@ describe('Contact', () => {
       target: { value: 'mayckol10r.s@gmail.com' },
     })
     fireEvent.change(screen.getByLabelText('Asunto'), {
-      target: { value: 'Propuesta de rol Full-Stack' },
+      target: { value: 'Vacante Full-Stack / QA Lead' },
     })
     fireEvent.change(screen.getByLabelText('Mensaje'), {
       target: { value: 'Hola Mayckol, me gustaría conversar sobre una vacante.' },

@@ -41,4 +41,13 @@ describe('Hero', () => {
       screen.getByRole('link', { name: /contactar/i }),
     ).toHaveAttribute('href', '#contacto')
   })
+
+  it('incluye un micro-hint interactivo que ancla a la sección de servicios', () => {
+    render(<Hero />)
+
+    const hint = screen.getByRole('link', {
+      name: /¿buscas ayuda para tu negocio\? mira cómo puedo ayudarte/i,
+    })
+    expect(hint).toHaveAttribute('href', '#servicios')
+  })
 })

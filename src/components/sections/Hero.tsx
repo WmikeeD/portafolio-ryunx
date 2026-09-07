@@ -96,6 +96,15 @@ function Hero() {
           </a>
         </motion.div>
 
+        <motion.p variants={itemVariants}>
+          <a
+            href="#servicios"
+            className="inline-flex cursor-pointer items-center gap-1 text-sm font-medium text-slate-500 transition-colors hover:text-brand-primary dark:text-slate-400"
+          >
+            ¿Buscas ayuda para tu negocio? Mira cómo puedo ayudarte ↓
+          </a>
+        </motion.p>
+
         <motion.div variants={itemVariants}>
           <SocialLinks links={socials} className="flex items-center gap-3 pt-2" />
         </motion.div>

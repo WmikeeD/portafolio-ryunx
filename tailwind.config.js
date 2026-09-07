@@ -10,6 +10,7 @@ export default {
           card: '#111827',
           primary: '#38BDF8',
           secondary: '#10B981',
+          accent: '#F59E0B',
         },
       },
     },

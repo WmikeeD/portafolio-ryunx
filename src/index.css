@@ -5,6 +5,14 @@
 @layer base {
   html {
     -webkit-text-size-adjust: 100%;
+    /* Deja aire bajo el navbar fijo al anclar a una sección (#servicios, etc.). */
+    scroll-padding-top: 5rem;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
   }
 
   body {

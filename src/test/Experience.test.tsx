@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import Experience from '../components/sections/Experience'
 
@@ -38,16 +38,24 @@ describe('Experience', () => {
     expect(screen.getByText(/núcleo ERP SAP HANA/i)).toBeInTheDocument()
   })
 
-  it('renderiza cada logro como badge de métrica junto a su detalle', () => {
+  it('renderiza cada logro con su micro-frase de contexto de negocio', () => {
     render(<Experience />)
 
     expect(
-      screen.getByText('-35% Tiempos de Despacho'),
+      screen.getByText(
+        'Optimización Operativa (-35% tiempos en ruta, menos demoras en entregas a clientes)',
+      ),
     ).toBeInTheDocument()
     expect(
-      screen.getByText('-30% Brechas de Inventario'),
+      screen.getByText(
+        'Control de Inventario (-30% discrepancias de stock entre sucursales)',
+      ),
     ).toBeInTheDocument()
-    expect(screen.getByText('Consistencia ACID')).toBeInTheDocument()
+    expect(
+      screen.getByText(
+        'Consistencia ACID (cero datos corruptos en transacciones clave)',
+      ),
+    ).toBeInTheDocument()
     expect(
       screen.getByText(/eliminando el uso de planillas manuales/i),
     ).toBeInTheDocument()
@@ -56,13 +64,29 @@ describe('Experience', () => {
     ).toBeInTheDocument()
   })
 
-  it('lista el stack tecnológico asociado a cada experiencia', () => {
+  it('colapsa el stack tecnológico tras un toggle "Ver tecnologías utilizadas"', () => {
     render(<Experience />)
 
-    expect(screen.getByText('SAP HANA')).toBeInTheDocument()
-    expect(screen.getByText('Laravel')).toBeInTheDocument()
+    expect(screen.queryByText('SAP HANA')).not.toBeInTheDocument()
+    expect(screen.queryByText('Clean Architecture')).not.toBeInTheDocument()
+
+    const toggles = screen.getAllByRole('button', {
+      name: /ver tecnologías utilizadas/i,
+    })
+    expect(toggles).toHaveLength(2)
+
+    fireEvent.click(toggles[0])
+    expect(toggles[0]).toHaveAttribute('aria-expanded', 'true')
     expect(screen.getByText('Flutter / Dart')).toBeInTheDocument()
     expect(screen.getByText('Clean Architecture')).toBeInTheDocument()
+
+    fireEvent.click(toggles[1])
+    expect(screen.getByText('SAP HANA')).toBeInTheDocument()
+    expect(screen.getByText('Laravel')).toBeInTheDocument()
+
+    fireEvent.click(toggles[0])
+    expect(toggles[0]).toHaveAttribute('aria-expanded', 'false')
+    expect(screen.queryByText('Flutter / Dart')).not.toBeInTheDocument()
   })
 
   it('elimina las sub-tarjetas residuales de proyecto (El reto / La arquitectura)', () => {

@@ -25,6 +25,24 @@ describe('App', () => {
     ).toBeInTheDocument()
   })
 
+  it('inserta Servicios tras el Hero y mantiene QA tras Proyectos', () => {
+    const { container } = render(<App />)
+
+    const ids = Array.from(container.querySelectorAll('main > section')).map(
+      (section) => section.id,
+    )
+
+    expect(ids).toEqual([
+      'inicio',
+      'servicios',
+      'experiencia',
+      'habilidades',
+      'proyectos',
+      'qa',
+      'contacto',
+    ])
+  })
+
   it('incluye la sección de proyectos (#proyectos) en el árbol principal', () => {
     const { container } = render(<App />)
 
