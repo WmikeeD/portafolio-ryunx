@@ -26,7 +26,8 @@ describe('Hero', () => {
     render(<Hero />)
 
     expect(screen.getByText('-35%')).toBeInTheDocument()
-    expect(screen.getByText(/carga operativa en Atika/i)).toBeInTheDocument()
+    expect(screen.getByText('carga operativa')).toBeInTheDocument()
+    expect(screen.queryByText(/atika/i)).not.toBeInTheDocument()
     expect(screen.getByText('-30%')).toBeInTheDocument()
     expect(screen.getByText(/errores administrativos/i)).toBeInTheDocument()
   })

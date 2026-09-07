@@ -68,7 +68,7 @@ describe('Projects', () => {
       screen.getByRole('button', { name: /móvil & offline/i }),
     ).toHaveTextContent('2')
     expect(
-      screen.getByRole('button', { name: /meta \/ producto/i }),
+      screen.getByRole('button', { name: /meta \/ ingeniería de producto/i }),
     ).toHaveTextContent('1')
     expect(
       screen.getByRole('button', { name: /qa & testing/i }),
@@ -209,10 +209,12 @@ describe('Projects', () => {
     expect(screen.queryByText(/Atika/i)).not.toBeInTheDocument()
   })
 
-  it('el filtro Meta / Producto muestra solo el caso del portafolio', () => {
+  it('el filtro Meta / Ingeniería de Producto muestra solo el caso del portafolio', () => {
     render(<Projects />)
 
-    fireEvent.click(screen.getByRole('button', { name: /meta \/ producto/i }))
+    fireEvent.click(
+      screen.getByRole('button', { name: /meta \/ ingeniería de producto/i }),
+    )
 
     const headings = screen.getAllByRole('heading', { level: 3 })
     expect(headings).toHaveLength(1)

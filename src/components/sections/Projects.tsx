@@ -55,7 +55,7 @@ const DOMAIN_FILTERS: readonly DomainFilter[] = [
   { id: 'erp-logistics', label: 'ERP & Logística' },
   { id: 'retail', label: 'Retail & Omnicanal' },
   { id: 'mobile', label: 'Móvil & Offline' },
-  { id: 'product-eng', label: 'Meta / Producto' },
+  { id: 'product-eng', label: 'Meta / Ingeniería de Producto' },
   { id: 'qa', label: 'QA & Testing' },
 ]
 

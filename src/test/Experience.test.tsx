@@ -42,14 +42,10 @@ describe('Experience', () => {
     render(<Experience />)
 
     expect(
-      screen.getByText(
-        'Optimización Operativa (-35% tiempos en ruta, menos demoras en entregas a clientes)',
-      ),
+      screen.getByText('Optimización Operativa (-35% tiempos en ruta)'),
     ).toBeInTheDocument()
     expect(
-      screen.getByText(
-        'Control de Inventario (-30% discrepancias de stock entre sucursales)',
-      ),
+      screen.getByText('Control de Inventario (-30% discrepancias de stock)'),
     ).toBeInTheDocument()
     expect(
       screen.getByText(
