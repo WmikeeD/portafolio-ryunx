@@ -18,6 +18,32 @@ describe('Navbar', () => {
     document.documentElement.classList.remove('dark')
   })
 
+  it('presenta el header como capa glass translúcida (sticky, blur, borde tenue)', () => {
+    render(<Navbar />)
+
+    const header = screen.getByRole('banner')
+    expect(header.className).toMatch(/sticky/)
+    expect(header.className).toMatch(/\btop-0\b/)
+    expect(header.className).toMatch(/\bz-20\b/)
+    expect(header.className).toMatch(/backdrop-blur-md/)
+    // Fondo semi-transparente + borde inferior tenue en ambos temas.
+    expect(header.className).toMatch(/bg-\[#f8fafc\]\/60/)
+    expect(header.className).toMatch(/dark:bg-\[#0a0e17\]\/55/)
+    expect(header.className).toMatch(/border-b/)
+  })
+
+  it('mantiene el foco de teclado visible en enlaces y botón de tema', () => {
+    render(<Navbar />)
+
+    expect(
+      screen.getByRole('button', { name: /activar modo claro/i }).className,
+    ).toMatch(/focus-visible:ring/)
+    const nav = screen.getByRole('navigation', { name: /principal/i })
+    expect(
+      within(nav).getByRole('link', { name: 'Proyectos' }).className,
+    ).toMatch(/focus-visible:ring/)
+  })
+
   it('renderiza los enlaces de anclaje de navegación', () => {
     render(<Navbar />)
     const nav = screen.getByRole('navigation', { name: /principal/i })

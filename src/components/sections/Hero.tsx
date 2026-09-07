@@ -22,13 +22,8 @@ function Hero() {
   return (
     <section
       id="inicio"
-      className="relative flex min-h-screen items-center overflow-hidden px-6 pt-24 pb-16"
+      className="relative flex min-h-screen items-center bg-transparent px-6 pt-24 pb-16"
     >
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -top-24 left-1/2 -z-10 size-96 -translate-x-1/2 rounded-full bg-brand-primary/20 blur-3xl"
-      />
-
       <motion.div
         className="mx-auto flex w-full max-w-3xl flex-col items-start gap-6"
         variants={containerVariants}

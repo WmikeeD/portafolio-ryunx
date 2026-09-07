@@ -24,6 +24,16 @@ if (!('matchMedia' in window)) {
   })
 }
 
+// jsdom no implementa el contexto 2D de <canvas>; el fondo animado del Hero lo
+// consulta y debe degradar sin ruido cuando no está disponible.
+if (typeof HTMLCanvasElement !== 'undefined') {
+  Object.defineProperty(HTMLCanvasElement.prototype, 'getContext', {
+    writable: true,
+    configurable: true,
+    value: vi.fn(() => null),
+  })
+}
+
 // jsdom no implementa IntersectionObserver; framer-motion lo usa para `whileInView`.
 if (!('IntersectionObserver' in window)) {
   class MockIntersectionObserver {

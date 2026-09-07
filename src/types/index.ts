@@ -1,3 +1,5 @@
+import type { IconType } from 'react-icons'
+
 /** Enlace de navegación por anclaje dentro de la landing. */
 export interface NavLink {
   label: string
@@ -67,17 +69,25 @@ export type SkillCategoryName =
   | 'QA & Testing'
   | 'DevOps & AI Tools'
 
-/** Habilidad técnica individual con su glifo identificativo. */
-export interface Skill {
+/**
+ * Habilidad técnica individual. `Icon` es el logo oficial en SVG
+ * (`react-icons/si`); es `null` para conceptos de arquitectura o metodología
+ * sin logo de marca, en cuyo caso el badge cae al monograma `initials`.
+ */
+export interface SkillItem {
   name: string
-  /** Monograma corto (2-3 caracteres) usado como icono textual. */
-  icon: string
+  /** Monograma corto (2-3 caracteres) usado como fallback sin logo. */
+  initials: string
+  /** Componente de logo oficial, o `null` para mostrar `initials`. */
+  Icon: IconType | null
+  /** Color de marca oficial del logo (hex). */
+  color: string
 }
 
 /** Grupo de habilidades bajo una misma categoría técnica. */
 export interface SkillCategory {
   category: SkillCategoryName
-  skills: Skill[]
+  skills: SkillItem[]
 }
 
 /** Dominio temático de un proyecto del showcase; `all` es el comodín de filtro. */
