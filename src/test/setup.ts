@@ -6,6 +6,13 @@ afterEach(() => {
   cleanup()
 })
 
+// Vercel Web Analytics inyecta un <script> en document.head y globals `window.va*`
+// al montarse. En jsdom no aporta nada y solo ensucia el entorno, así que lo
+// neutralizamos: <App/> se monta sin efectos colaterales ni advertencias.
+vi.mock('@vercel/analytics/react', () => ({
+  Analytics: () => null,
+}))
+
 // jsdom no implementa matchMedia; framer-motion lo consulta (prefers-reduced-motion).
 if (!('matchMedia' in window)) {
   Object.defineProperty(window, 'matchMedia', {

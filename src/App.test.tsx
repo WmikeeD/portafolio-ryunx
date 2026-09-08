@@ -14,6 +14,16 @@ describe('App', () => {
     ).toBeInTheDocument()
   })
 
+  it('monta la app completa sin que Vercel Web Analytics bloquee el render', () => {
+    expect(() => render(<App />)).not.toThrow()
+
+    // <Analytics/> es inerte en jsdom (mock → null): el contenido real sigue intacto.
+    expect(
+      screen.getByRole('heading', { level: 1, name: /mayckol rodríguez/i }),
+    ).toBeInTheDocument()
+    expect(screen.getByRole('contentinfo')).toBeInTheDocument()
+  })
+
   it('monta el fondo global continuo detrás del contenido en z-10', () => {
     const { container } = render(<App />)
 
