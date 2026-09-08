@@ -1,3 +1,4 @@
+import { Analytics } from '@vercel/analytics/react'
 import GlobalBackground from './components/layout/GlobalBackground'
 import Navbar from './components/layout/Navbar'
 import Hero from './components/sections/Hero'
@@ -24,6 +25,7 @@ function App() {
         <Contact />
       </main>
       <Footer />
+      <Analytics />
     </div>
   )
 }
