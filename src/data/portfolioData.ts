@@ -322,7 +322,7 @@ export const showcaseProjects: ShowcaseProject[] = [
     problem:
       'Un sitio personal que se actualiza constantemente corre el riesgo de romperse en producción si cada cambio se sube directo a la rama principal sin validación previa, además de requerir despliegue manual repetitivo.',
     solution:
-      'Trabajo por ramas y pull requests hacia main. En cada PR, GitHub Actions ejecuta la auditoría de dependencias de producción (falla ante cualquier vulnerabilidad conocida), el type-check y la suite de Vitest + React Testing Library. La integración de Vercel publica producción desde main y genera un preview por cada PR. El formulario de contacto corre como función serverless en Vercel, y el contenido está tipado y cubierto por tests de invariantes y de confidencialidad.',
+      'Trabajo por ramas y pull requests hacia main, que está protegida: no admite push directo y exige que el check de CI esté en verde para mergear. En cada PR, GitHub Actions ejecuta la auditoría de dependencias de producción (falla ante cualquier vulnerabilidad conocida), el type-check y la suite de Vitest + React Testing Library. La integración de Vercel publica producción desde main y genera un preview por cada PR. El formulario de contacto corre como función serverless en Vercel, y el contenido está tipado y cubierto por tests de invariantes y de confidencialidad.',
     pipeline: {
       client: 'React 19 + TypeScript + Tailwind',
       api: 'Función serverless (contacto)',
@@ -330,7 +330,7 @@ export const showcaseProjects: ShowcaseProject[] = [
       persistenceOrErp: 'Vercel (producción + previews por PR)',
     },
     qaGate:
-      'Cada PR hacia main pasa por GitHub Actions: auditoría de dependencias, type-check y tests de Vitest + React Testing Library, incluidos los de invariantes del contenido y de confidencialidad. Vercel genera un preview del PR para revisarlo antes del merge.',
+      'Cada PR hacia main pasa por GitHub Actions: auditoría de dependencias, type-check y tests de Vitest + React Testing Library, incluidos los de invariantes del contenido y de confidencialidad. El check de CI es requerido por la regla de protección de main: sin él en verde, el PR no se puede mergear. Vercel genera un preview del PR para revisarlo antes del merge.',
     stack: [
       'React',
       'Vite',
@@ -341,6 +341,7 @@ export const showcaseProjects: ShowcaseProject[] = [
       'Vitest',
       'React Testing Library',
     ],
+    githubUrl: 'https://github.com/WmikeeD/portafolio-ryunx',
   },
 ]
 
