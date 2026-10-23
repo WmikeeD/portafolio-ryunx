@@ -1,0 +1,54 @@
+# Dependencias
+node_modules/
+
+# Build / salida
+dist/
+dist-ssr/
+*.tsbuildinfo
+.vite/
+vite.config.*.timestamp-*
+
+# Tests / cobertura
+coverage/
+*.lcov
+playwright-report/
+test-results/
+
+# Entorno y secretos
+.env
+.env.*
+!.env.example
+*.local
+*.pem
+*.key
+
+# Vercel
+.vercel/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Editores
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json.example
+*.swp
+*.suo
+
+# Claude Code (solo lo personal; CLAUDE.md y .claude/settings.json se versionan)
+.claude/settings.local.json
+CLAUDE.local.md
+
+# Notas personales fuera de control de versiones
+*.private.md

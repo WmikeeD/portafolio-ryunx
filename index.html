@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="es" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Portafolio de Mayckol Rodríguez, ingeniero Full-Stack y QA: proyectos, experiencia y una demostración de QA." />
+    <title>Mayckol Rodríguez · Full-Stack &amp; QA Engineer</title>
+    <script>
+      // Sincroniza la clase `dark` antes del primer render para evitar el flash.
+      // Por defecto: oscuro (la clase ya viene en <html>); solo la quitamos si el usuario eligió claro.
+      try {
+        if (localStorage.getItem('theme') === 'light') {
+          document.documentElement.classList.remove('dark')
+        }
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
