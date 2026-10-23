@@ -259,6 +259,27 @@ describe('Projects', () => {
     ).not.toBeInTheDocument()
   })
 
+  it('el proyecto del portafolio enlaza a su repositorio público', () => {
+    render(<Projects />)
+
+    fireEvent.click(screen.getByRole('button', { name: /todos/i }))
+    fireEvent.click(
+      screen.getByRole('button', { name: /modo: técnico completo/i }),
+    )
+
+    const repoLink = screen
+      .getAllByRole('link', { name: /ver código en github/i })
+      .find(
+        (link) =>
+          link.getAttribute('href') ===
+          'https://github.com/WmikeeD/portafolio-ryunx',
+      )
+    expect(repoLink).toBeDefined()
+    expect(repoLink).toHaveAttribute('target', '_blank')
+    expect(repoLink?.getAttribute('rel')).toContain('noopener')
+    expect(repoLink?.getAttribute('rel')).toContain('noreferrer')
+  })
+
   it('la Capa 2 de cada proyecto enlaza con su grupo en el QA Showcase', () => {
     render(<Projects />)
 

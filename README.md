@@ -24,6 +24,8 @@ GitHub Actions runs on every push and pull request to `main`:
 2. `npm run type-check` — TypeScript project references
 3. `npm run test:run` — Vitest + Testing Library
 
+`main` is protected by a branch ruleset: changes land only through pull requests, and the CI check (`Quality & Security Gates`) must pass before merging.
+
 Lint and the production build run locally before each pull request; adding them to CI is planned.
 Deployment is handled by Vercel's Git integration.
 

@@ -81,6 +81,8 @@ El contenido sobre experiencia laboral sigue [`docs/guia-confidencialidad.md`](d
 4. Commits con Conventional Commits (`feat:`, `fix:`, `refactor:`, `test:`, `docs:`, `chore:`), referenciando el ID.
 5. Abrir PR con el template y resumen de cambios.
 
+main está protegida por un ruleset: todo cambio entra por PR y requiere el check de CI en verde. Nunca hacer push directo a main.
+
 ## Definition of Done
 
 1. Criterios de aceptación de la tarea cumplidos.
