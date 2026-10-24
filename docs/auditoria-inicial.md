@@ -31,6 +31,7 @@ Es una SPA de una sola página, sin router: las secciones se navegan por anclas.
 
 ```
 api/contact.ts            Función serverless Vercel (POST → Resend). Esquema zod duplicado a propósito.
+api/tsconfig.json         tsconfig estricto de la función; Vercel lo toma por ser el más cercano al entrypoint.
 public/favicon.svg
 src/
   App.tsx, main.tsx       Composición de secciones; <Analytics/>.

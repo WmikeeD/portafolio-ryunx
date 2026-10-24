@@ -19,7 +19,7 @@ Cada tarea llega en el prompt con su ID, objetivo y criterios de aceptación; si
 
 ## Stack y comandos
 
-SPA **Vite 8 + React 19 + TypeScript 6**, Tailwind CSS **3.4** (fijado a propósito, no migrar a v4), framer-motion, lucide-react + react-icons, react-hook-form + zod 4. Tests: **Vitest 4 + jsdom + Testing Library**. Lint: **oxlint**. Gestor: **npm** (`package-lock.json`). Node **24.x** (`engines` en `package.json`; CI y Vercel lo leen de ahí). Deploy: **Vercel** (estático + función `api/contact.ts` con Resend). Detalle: `docs/auditoria-inicial.md`.
+SPA **Vite 8 + React 19 + TypeScript 6** (`strict` en `tsconfig.app.json`, `tsconfig.node.json` y `api/tsconfig.json`), Tailwind CSS **3.4** (fijado a propósito, no migrar a v4), framer-motion, lucide-react + react-icons, react-hook-form + zod 4. Tests: **Vitest 4 + jsdom + Testing Library**. Lint: **oxlint**. Gestor: **npm** (`package-lock.json`). Node **24.x** (`engines` en `package.json`; CI y Vercel lo leen de ahí). Deploy: **Vercel** (estático + función `api/contact.ts` con Resend). Detalle: `docs/auditoria-inicial.md`.
 
 | Tarea | Comando |
 |---|---|
@@ -28,7 +28,7 @@ SPA **Vite 8 + React 19 + TypeScript 6**, Tailwind CSS **3.4** (fijado a propós
 | Tests (una pasada) | `npm run test:run` |
 | Tests (watch) | `npm test` |
 | Lint | `npm run lint` |
-| Type-check | `npm run type-check` (`tsc -b`: usa project references; `tsc --noEmit` solo no revisa nada) |
+| Type-check | `npm run type-check` (`tsc -b`: usa project references —app, node y `api/`—; `tsc --noEmit` solo no revisa nada) |
 | Build | `npm run build` |
 | Preview del build | `npm run preview` |
 
@@ -46,6 +46,7 @@ Estructura actual:
 - `src/hooks/` — tema, `prefers-reduced-motion`. `src/lib/crossLink.ts` — eventos Proyectos ⇄ QA Showcase.
 - `src/test/` — tests por componente, `confidentiality.test.ts` (contenido vs. guía de confidencialidad) + `setup.ts` (polyfills de jsdom).
 - `api/contact.ts` — función serverless autocontenida (duplica el esquema de contacto a propósito: Vercel no empaqueta `src/`).
+- `api/tsconfig.json` — tsconfig propio de la función (estricto). Vercel usa el `tsconfig.json` más cercano al entrypoint: si se elimina, cae al raíz (sin `compilerOptions`) y compila con `strict: false`. No moverlo fuera de `api/`.
 - Modo Negocio/Técnico: booleano local en `Projects.tsx`. QA Showcase: **demo rotulada** ("Demostración", estados "OK (demo)"): no muestra cobertura, fallos ni duraciones hasta tener QA real (F3-01). No reintroducir métricas sin una ejecución real detrás.
 
 Objetivo a mediano plazo (F3-02):
