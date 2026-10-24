@@ -2,8 +2,7 @@ import type { IncomingMessage, ServerResponse } from 'node:http'
 import { Resend } from 'resend'
 import { z } from 'zod'
 
-const RECIPIENT_EMAIL = 'mayckol10r.s@gmail.com'
-const SENDER = 'Portfolio Contact <onboarding@resend.dev>'
+const MAX_BODY_BYTES = 10 * 1024
 
 const CONTROL_CHAR_MAX = 31
 const DELETE_CHAR = 127
@@ -32,11 +31,20 @@ function sanitizeFreeText(value: string): string {
   return printable.trim()
 }
 
+/**
+ * Elimina CR/LF de los campos que terminan en el asunto del correo, para que
+ * no puedan inyectar cabeceras ni partir la línea del asunto.
+ */
+function stripLineBreaks(value: string): string {
+  return value.replace(/[\r\n]+/g, ' ')
+}
+
 const nameField = z
   .string()
   .trim()
   .min(3, 'El nombre debe tener al menos 3 caracteres.')
   .max(80, 'El nombre no puede superar los 80 caracteres.')
+  .transform(stripLineBreaks)
   .transform(sanitizeFreeText)
   .pipe(
     z
@@ -57,6 +65,7 @@ const subjectField = z
   .trim()
   .min(4, 'El asunto debe tener al menos 4 caracteres.')
   .max(100, 'El asunto no puede superar los 100 caracteres.')
+  .transform(stripLineBreaks)
   .transform(sanitizeFreeText)
   .pipe(
     z
@@ -78,11 +87,19 @@ const messageField = z
       .max(1000, 'El mensaje no puede superar los 1000 caracteres.'),
   )
 
-const contactSchema = z.object({
+/**
+ * Honeypot: campo oculto a las personas que los bots tienden a rellenar. Acepta
+ * cualquier texto para que nunca produzca un error de validación visible; el
+ * endpoint descarta el envío si llega con contenido.
+ */
+const honeypotField = z.string().optional()
+
+export const contactSchema = z.strictObject({
   name: nameField,
   email: emailField,
   subject: subjectField,
   message: messageField,
+  extraInfo: honeypotField,
 })
 
 type ContactFormData = z.infer<typeof contactSchema>
@@ -138,6 +155,68 @@ function buildEmailHtml(data: ContactFormData): string {
   `.trim()
 }
 
+interface MailConfig {
+  apiKey: string
+  to: string
+  from: string
+}
+
+function readMailConfig(): MailConfig | null {
+  const apiKey = process.env.RESEND_API_KEY
+  const to = process.env.CONTACT_TO_EMAIL
+  const from = process.env.CONTACT_FROM_EMAIL
+  if (!apiKey || !to || !from) {
+    return null
+  }
+  return { apiKey, to, from }
+}
+
+function isJsonRequest(req: ContactRequest): boolean {
+  const contentType = req.headers['content-type'] ?? ''
+  return contentType.split(';')[0].trim().toLowerCase() === 'application/json'
+}
+
+const INVALID_JSON = Symbol('invalid-json')
+
+/** El getter `req.body` de Vercel lanza una excepción si el JSON está mal formado. */
+function readBody(req: ContactRequest): unknown {
+  try {
+    return req.body
+  } catch {
+    return INVALID_JSON
+  }
+}
+
+/**
+ * Depende de `content-length` (o del largo del cuerpo si llega como texto).
+ * Sin esa cabecera, el tamaño queda acotado por los máximos del esquema.
+ */
+function exceedsBodyLimit(req: ContactRequest, body: unknown): boolean {
+  const declaredLength = Number(req.headers['content-length'])
+  if (Number.isFinite(declaredLength) && declaredLength > MAX_BODY_BYTES) {
+    return true
+  }
+  return typeof body === 'string' && Buffer.byteLength(body) > MAX_BODY_BYTES
+}
+
+function parseJsonBody(body: unknown): unknown {
+  if (typeof body !== 'string') {
+    return body
+  }
+  try {
+    return JSON.parse(body)
+  } catch {
+    return INVALID_JSON
+  }
+}
+
+function isHoneypotFilled(data: ContactFormData): boolean {
+  return (data.extraInfo ?? '').trim() !== ''
+}
+
+const SEND_ERROR = 'No se pudo enviar el correo. Inténtalo de nuevo más tarde.'
+const SUCCESS_BODY = { success: true, message: 'Correo enviado correctamente' }
+
 export default async function handler(
   req: ContactRequest,
   res: ContactResponse,
@@ -148,51 +227,59 @@ export default async function handler(
     return
   }
 
-  const apiKey = process.env.RESEND_API_KEY
-  if (!apiKey) {
+  if (!isJsonRequest(req)) {
+    res.status(415).json({ error: 'El cuerpo debe ser application/json.' })
+    return
+  }
+
+  const rawBody = readBody(req)
+  if (exceedsBodyLimit(req, rawBody)) {
+    res.status(413).json({ error: 'El cuerpo de la petición es demasiado grande.' })
+    return
+  }
+
+  const config = readMailConfig()
+  if (!config) {
     res.status(500).json({ error: 'Error interno de configuración del servidor.' })
     return
   }
 
-  let body: unknown = req.body
-  if (typeof body === 'string') {
-    try {
-      body = JSON.parse(body)
-    } catch {
-      res.status(400).json({ error: 'Cuerpo de la petición inválido.' })
-      return
-    }
+  const body = parseJsonBody(rawBody)
+  if (body === INVALID_JSON) {
+    res.status(400).json({ error: 'Cuerpo de la petición inválido.' })
+    return
   }
 
   const result = contactSchema.safeParse(body)
   if (!result.success) {
-    res.status(400).json({ error: 'Datos inválidos', details: result.error.format() })
+    res.status(400).json({ error: 'Datos inválidos.' })
+    return
+  }
+
+  if (isHoneypotFilled(result.data)) {
+    res.status(200).json(SUCCESS_BODY)
     return
   }
 
   const { name, email, subject } = result.data
 
   try {
-    const resend = new Resend(apiKey)
+    const resend = new Resend(config.apiKey)
     const { error } = await resend.emails.send({
-      from: SENDER,
-      to: [RECIPIENT_EMAIL],
+      from: config.from,
+      to: [config.to],
       replyTo: email,
       subject: `[Nuevo Contacto Web] ${subject} - ${name}`,
       html: buildEmailHtml(result.data),
     })
 
     if (error) {
-      res.status(500).json({
-        error: 'No se pudo enviar el correo. Inténtalo de nuevo más tarde.',
-      })
+      res.status(500).json({ error: SEND_ERROR })
       return
     }
 
-    res.status(200).json({ success: true, message: 'Correo enviado correctamente' })
+    res.status(200).json(SUCCESS_BODY)
   } catch {
-    res.status(500).json({
-      error: 'No se pudo enviar el correo. Inténtalo de nuevo más tarde.',
-    })
+    res.status(500).json({ error: SEND_ERROR })
   }
 }

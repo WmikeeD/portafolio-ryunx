@@ -13,8 +13,11 @@ vi.mock('@vercel/analytics/react', () => ({
   Analytics: () => null,
 }))
 
+// Los tests de `tests/api/` corren en el entorno node, sin `window`.
+const hasWindow = typeof window !== 'undefined'
+
 // jsdom no implementa matchMedia; framer-motion lo consulta (prefers-reduced-motion).
-if (!('matchMedia' in window)) {
+if (hasWindow && !('matchMedia' in window)) {
   Object.defineProperty(window, 'matchMedia', {
     writable: true,
     configurable: true,
@@ -42,7 +45,7 @@ if (typeof HTMLCanvasElement !== 'undefined') {
 }
 
 // jsdom no implementa IntersectionObserver; framer-motion lo usa para `whileInView`.
-if (!('IntersectionObserver' in window)) {
+if (hasWindow && !('IntersectionObserver' in window)) {
   class MockIntersectionObserver {
     readonly root: Element | null = null
     readonly rootMargin: string = '0px'
