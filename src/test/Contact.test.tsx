@@ -34,6 +34,13 @@ describe('Contact', () => {
     ).toBeInTheDocument()
   })
 
+  it('usa una sola columna en móvil para evitar el desborde horizontal', () => {
+    const { container } = render(<Contact />)
+
+    const layout = container.querySelector('#contacto .grid')
+    expect(layout).toHaveClass('grid-cols-1', 'md:grid-cols-2')
+  })
+
   it('no publica un teléfono de contacto', () => {
     const { container } = render(<Contact />)
 
