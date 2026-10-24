@@ -45,8 +45,10 @@ Estructura actual:
 - `src/types/index.ts` — tipos del contenido (sin validación en runtime). `src/types/contact.ts` — esquema zod del formulario.
 - `src/hooks/` — tema, `prefers-reduced-motion`. `src/lib/crossLink.ts` — eventos Proyectos ⇄ QA Showcase.
 - `src/test/` — tests por componente, `confidentiality.test.ts` (contenido vs. guía de confidencialidad) + `setup.ts` (polyfills de jsdom).
-- `api/contact.ts` — función serverless autocontenida (duplica el esquema de contacto a propósito: Vercel no empaqueta `src/`).
-- `api/tsconfig.json` — tsconfig propio de la función (estricto). Vercel usa el `tsconfig.json` más cercano al entrypoint: si se elimina, cae al raíz (sin `compilerOptions`) y compila con `strict: false`. No moverlo fuera de `api/`.
+- `api/contact.ts` — función serverless autocontenida (duplica el esquema de contacto a propósito: Vercel no empaqueta `src/`). Orden de respuestas: 405 → 415 → 413 (>10 KB según `content-length`) → 500 (configuración) → 400 (JSON o esquema, mensaje genérico) → honeypot `extraInfo` con contenido = 200 sin enviar → envío. El 429 lo produce la regla WAF de Vercel (F3-07c), no la función.
+- `api/tsconfig.json` — tsconfig propio de la función (estricto). Vercel usa el `tsconfig.json` más cercano al entrypoint: si se elimina, cae al raíz (sin `compilerOptions`) y compila con `strict: false`. No moverlo fuera de `api/`. Su `include` cubre también `../tests/api`.
+- `tests/api/` — tests de la función (`// @vitest-environment node`, `resend` mockeado) y `contact-schema-parity.test.ts`, que exige que el esquema de `api/` y el de `src/types/contact.ts` den el mismo resultado. **Nunca** poner tests dentro de `api/`: Vercel convierte cada archivo de esa carpeta en un endpoint.
+- Variables de entorno (Vercel, todas obligatorias; si falta una, `api/contact.ts` responde 500): `RESEND_API_KEY`, `CONTACT_TO_EMAIL` (destinatario), `CONTACT_FROM_EMAIL` (remitente verificado en Resend).
 - Modo Negocio/Técnico: booleano local en `Projects.tsx`. QA Showcase: **demo rotulada** ("Demostración", estados "OK (demo)"): no muestra cobertura, fallos ni duraciones hasta tener QA real (F3-01). No reintroducir métricas sin una ejecución real detrás.
 
 Objetivo a mediano plazo (F3-02):

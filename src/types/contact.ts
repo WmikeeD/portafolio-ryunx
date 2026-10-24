@@ -29,11 +29,20 @@ export function sanitizeFreeText(value: string): string {
   return printable.trim()
 }
 
+/**
+ * Elimina CR/LF de los campos que terminan en el asunto del correo, para que
+ * no puedan inyectar cabeceras ni partir la línea del asunto.
+ */
+function stripLineBreaks(value: string): string {
+  return value.replace(/[\r\n]+/g, ' ')
+}
+
 const nameField = z
   .string()
   .trim()
   .min(3, 'El nombre debe tener al menos 3 caracteres.')
   .max(80, 'El nombre no puede superar los 80 caracteres.')
+  .transform(stripLineBreaks)
   .transform(sanitizeFreeText)
   .pipe(
     z
@@ -54,6 +63,7 @@ const subjectField = z
   .trim()
   .min(4, 'El asunto debe tener al menos 4 caracteres.')
   .max(100, 'El asunto no puede superar los 100 caracteres.')
+  .transform(stripLineBreaks)
   .transform(sanitizeFreeText)
   .pipe(
     z
@@ -75,12 +85,20 @@ const messageField = z
       .max(1000, 'El mensaje no puede superar los 1000 caracteres.'),
   )
 
+/**
+ * Honeypot: campo oculto a las personas que los bots tienden a rellenar. Acepta
+ * cualquier texto para que nunca produzca un error de validación visible; el
+ * endpoint descarta el envío si llega con contenido.
+ */
+const honeypotField = z.string().optional()
+
 /** Esquema de validación y sanitización del formulario de contacto. */
-export const contactSchema = z.object({
+export const contactSchema = z.strictObject({
   name: nameField,
   email: emailField,
   subject: subjectField,
   message: messageField,
+  extraInfo: honeypotField,
 })
 
 /** Datos del formulario de contacto ya validados y sanitizados. */

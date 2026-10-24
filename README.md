@@ -16,7 +16,8 @@ Personal portfolio of Mayckol Rodríguez, Full-Stack & QA Engineer.
 - **QA Showcase:** an animated, clearly labeled *demo* of test cases per project. It does not
   display real test results yet; wiring it to the Vitest report generated in CI is planned.
 - Contact form backed by a Vercel serverless function (Resend), validated with zod on both
-  client and server.
+  client and server (strict schema, 10 KB body limit, hidden honeypot field). A parity test keeps
+  both schemas in sync.
 
 ## Quality checks
 GitHub Actions runs on every push and pull request to `main`:
@@ -53,6 +54,19 @@ To run this project locally (Node 24.x, see `engines` in `package.json`):
    npm run test:run
    npm run build
    ```
+
+## Environment variables
+The contact function (`api/contact.ts`) reads these from the Vercel project settings. All three are
+required; if any is missing the endpoint answers `500`. Example values only:
+
+| Variable | Purpose | Example |
+|---|---|---|
+| `RESEND_API_KEY` | Resend API key (secret, server-only) | — |
+| `CONTACT_TO_EMAIL` | Inbox that receives the messages | `inbox@example.com` |
+| `CONTACT_FROM_EMAIL` | Sender address verified in Resend | `Portfolio <contact@example.com>` |
+
+Tests for the function live in `tests/api/`, outside `api/`, because Vercel turns every file in
+`api/` into an endpoint.
 
 ## Project docs
 - [`CLAUDE.md`](CLAUDE.md) — conventions for AI-assisted development with Claude Code.

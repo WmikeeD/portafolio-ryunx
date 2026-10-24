@@ -19,8 +19,10 @@ import { contactSchema, type ContactFormData } from '../../types/contact'
 const fieldClass =
   'rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition-colors placeholder:text-slate-400 focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/30 aria-[invalid=true]:border-red-400 dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-100 dark:placeholder:text-slate-500'
 
+type VisibleFieldName = Exclude<keyof ContactFormData, 'extraInfo'>
+
 interface FieldProps {
-  name: keyof ContactFormData
+  name: VisibleFieldName
   label: string
   error?: string
   children: ReactNode
@@ -139,6 +141,11 @@ function ContactChannels() {
 const GENERIC_SUBMIT_ERROR =
   'No se pudo enviar tu mensaje. Inténtalo de nuevo más tarde.'
 
+const RATE_LIMIT_ERROR =
+  'Demasiados intentos. Espera unos minutos e inténtalo de nuevo.'
+
+const TOO_MANY_REQUESTS = 429
+
 /** Motivos de contacto, equilibrados entre clientes de negocio y roles técnicos. */
 const SUBJECT_OPTIONS = [
   'Proyecto / Automatización para mi negocio',
@@ -159,7 +166,7 @@ function Contact() {
   } = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema),
     mode: 'onTouched',
-    defaultValues: { name: '', email: '', subject: '', message: '' },
+    defaultValues: { name: '', email: '', subject: '', message: '', extraInfo: '' },
   })
 
   const onSubmit = async (data: ContactFormData): Promise<void> => {
@@ -173,7 +180,11 @@ function Contact() {
       })
 
       if (!response.ok) {
-        setSubmitError(GENERIC_SUBMIT_ERROR)
+        setSubmitError(
+          response.status === TOO_MANY_REQUESTS
+            ? RATE_LIMIT_ERROR
+            : GENERIC_SUBMIT_ERROR,
+        )
         return
       }
 
@@ -324,6 +335,20 @@ function Contact() {
                     {...register('message')}
                   />
                 </Field>
+
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute -left-[9999px] size-px overflow-hidden"
+                >
+                  <label htmlFor="extraInfo">No completar este campo</label>
+                  <input
+                    id="extraInfo"
+                    type="text"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    {...register('extraInfo')}
+                  />
+                </div>
 
                 <button
                   type="submit"

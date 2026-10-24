@@ -2,6 +2,21 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import Contact from '../components/sections/Contact'
 
+function fillValidForm(): void {
+  fireEvent.change(screen.getByLabelText('Nombre'), {
+    target: { value: 'Mayckol Rodríguez' },
+  })
+  fireEvent.change(screen.getByLabelText('Correo electrónico'), {
+    target: { value: 'mayckol10r.s@gmail.com' },
+  })
+  fireEvent.change(screen.getByLabelText('Asunto'), {
+    target: { value: 'Vacante Full-Stack / QA Lead' },
+  })
+  fireEvent.change(screen.getByLabelText('Mensaje'), {
+    target: { value: 'Hola Mayckol, me gustaría conversar sobre una vacante.' },
+  })
+}
+
 describe('Contact', () => {
   beforeEach(() => {
     globalThis.fetch = vi.fn()
@@ -190,5 +205,48 @@ describe('Contact', () => {
 
     const alert = await screen.findByRole('alert')
     expect(alert).toHaveTextContent(/no se pudo enviar tu mensaje/i)
+  })
+
+  it('incluye un honeypot oculto, fuera del orden de tabulación y sin autocompletado', () => {
+    const { container } = render(<Contact />)
+
+    const honeypot = container.querySelector<HTMLInputElement>('#extraInfo')
+    expect(honeypot).not.toBeNull()
+    expect(honeypot).toHaveAttribute('tabindex', '-1')
+    expect(honeypot).toHaveAttribute('autocomplete', 'off')
+    expect(honeypot?.closest('[aria-hidden="true"]')).not.toBeNull()
+    expect(screen.queryByRole('textbox', { name: /no completar/i })).not.toBeInTheDocument()
+  })
+
+  it('nunca muestra un error de validación por el honeypot y envía su valor', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true, status: 200 })
+    globalThis.fetch = fetchMock
+
+    const { container } = render(<Contact />)
+    fillValidForm()
+    const honeypot = container.querySelector<HTMLInputElement>('#extraInfo')
+    if (!honeypot) throw new Error('honeypot no encontrado')
+    fireEvent.change(honeypot, { target: { value: 'x'.repeat(5000) } })
+
+    fireEvent.click(screen.getByRole('button', { name: /enviar mensaje/i }))
+
+    await screen.findByRole('status', {}, { timeout: 2000 })
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+    const [, init] = fetchMock.mock.calls[0] as [string, RequestInit]
+    expect(JSON.parse(String(init.body))).toMatchObject({ extraInfo: 'x'.repeat(5000) })
+  })
+
+  it('muestra un aviso específico cuando la API responde 429', async () => {
+    globalThis.fetch = vi.fn().mockResolvedValue({ ok: false, status: 429 })
+
+    render(<Contact />)
+    fillValidForm()
+
+    fireEvent.click(screen.getByRole('button', { name: /enviar mensaje/i }))
+
+    const alert = await screen.findByRole('alert')
+    expect(alert).toHaveTextContent(
+      'Demasiados intentos. Espera unos minutos e inténtalo de nuevo.',
+    )
   })
 })

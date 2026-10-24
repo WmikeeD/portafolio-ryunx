@@ -105,7 +105,7 @@ Es una estimación, porque no hay herramienta instalada. Se cruzaron los módulo
 | `types/contact.ts` (esquema y sanitización) | ◐ indirecto vía `Contact.test.tsx` |
 | Hooks (`useTheme`, `useIsDark`, `usePrefersReducedMotion`) | ◐ indirecto (Navbar/App); sin tests unitarios |
 | `SceneCanvas`, `SocialLinks` | ◐ indirecto (canvas mockeado en `setup.ts`) |
-| **`api/contact.ts`** (único backend: validación, 405/400/500, envío) | ❌ **sin tests** |
+| **`api/contact.ts`** (único backend: validación, 405/400/500, envío) | ❌ **sin tests** (resuelto en F3-07b: `tests/api/`) |
 | Integridad de datos (ids únicos, todo `proyecto_id` existe, etc.) | ❌ sin tests de esquema |
 
 Estimación: alta cobertura de render de componentes y nula del backend. Muchos tests verifican **copys literales** (`getByText('…')` sobre los textos de datos), así que cualquier cambio de redacción los rompe.
@@ -138,7 +138,7 @@ Estimación: alta cobertura de render de componentes y nula del backend. Muchos 
 | ID | Hallazgo | Evidencia | Sugerencia |
 |---|---|---|---|
 | R-01 | El QA Showcase es una demostración, no un resultado real | Sección 3 | Alimentar el panel con un reporte JSON real de Vitest generado en CI/build (F3-01) |
-| R-02 | El backend `api/contact.ts` no tiene tests, rate limiting ni protección anti-bot (honeypot/captcha); está expuesto públicamente y envía correos | `api/contact.ts` | Tests del handler, rate limit (Vercel KV/Upstash o middleware) y honeypot |
+| R-02 | El backend `api/contact.ts` no tiene tests, rate limiting ni protección anti-bot (honeypot/captcha); está expuesto públicamente y envía correos | `api/contact.ts` | Tests del handler, rate limit (Vercel KV/Upstash o middleware) y honeypot. **F3-07b:** tests y honeypot hechos; el 429 lo produce la regla WAF de F3-07c |
 
 ### Medio
 
@@ -151,7 +151,7 @@ Estimación: alta cobertura de render de componentes y nula del backend. Muchos 
 | R-07 | Archivos grandes con varias responsabilidades: `portfolioData.ts` (691 l.), `QAShowcase.tsx` (611 l., motor de la demo + UI), `Projects.tsx` (557 l.) | `wc -l` | Separar contenido por dominio (`content/projects/*`, …) y extraer el motor de QA a un hook |
 | R-08 | Textos de UI hardcodeados en componentes | Sección 2 | Moverlos a contenido tipado (prerrequisito de los modos) |
 | R-09 | Tests acoplados a copys literales | `src/test/*` | Usar roles, `data-testid` o los datos importados en lugar de strings |
-| R-10 | Esquema de contacto duplicado en `api/` y `src/types/contact.ts` (riesgo de divergencia) | `api/contact.ts` | Paquete compartido o build step; mientras tanto, un test que compare ambos esquemas |
+| R-10 | Esquema de contacto duplicado en `api/` y `src/types/contact.ts` (riesgo de divergencia) | `api/contact.ts` | Paquete compartido o build step; mientras tanto, un test que compare ambos esquemas. **F3-07b:** test de paridad en `tests/api/` |
 | R-11 | Faltan cabeceras de seguridad: CSP, `Referrer-Policy`, `Permissions-Policy`, HSTS. `X-XSS-Protection` está obsoleta | `vercel.json` | Completar las cabeceras |
 | R-12 | Protección de `main` por configurar en el repo | GitHub Settings | PR obligatorio, check de CI requerido, sin force-push ni borrado |
 
